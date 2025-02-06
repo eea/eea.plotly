@@ -36,11 +36,12 @@ setup(
     url='https://github.com/eea/eea.plotly',
     license='GPL version 2',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['eea'],
+    namespace_packages=['eea', 'eea.plotly'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
         'setuptools',
+        "plone.volto",
         # -*- Extra requirements: -*-
     ],
     extras_require={
