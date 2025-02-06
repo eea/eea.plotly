@@ -5,7 +5,7 @@ Changelog
 ---------------------------
 * Change: Release [razvanMiu]
 
-1.0-dev0 - (unreleased)
+1.0 - (2025-02-06)
 -----------------------
 
 * Initial release.
