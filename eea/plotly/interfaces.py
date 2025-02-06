@@ -1,10 +1,10 @@
 """Module where all interfaces, events and exceptions live."""
+import json
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from plone.schema import JSONField
 from eea.plotly import EEAMessageFactory as _
 
-import json
 
 TEMPLATES_SCHEMA = json.dumps({
     "type": "array",
