@@ -16,10 +16,6 @@ class PlotlySettingsGet(Service):
 
     def reply(self):
         """Reply"""
-
-        import pdb
-        pdb.set_trace()
-
         if not IPlotlyLayer.providedBy(self.request):
             return {
                 "templates": []
@@ -29,6 +25,6 @@ class PlotlySettingsGet(Service):
             "templates": api.portal.get_registry_record(
                 "templates",
                 interface=IPlotlySettings,
-                default=[],
+                default=[]
             )
         }

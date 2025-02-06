@@ -17,3 +17,6 @@ class PlotlyControlpanel(RegistryConfigletPanel):
     configlet_category_id = "Products"
     title = "Plotly Settings"
     group = "Products"
+    data = {
+        "templates": []
+    }

@@ -6,6 +6,7 @@
   <i18n:registerTranslations directory="locales" />
 
   <include file="profiles.zcml" />
+  <include file="permissions.zcml" />
 
   <include package=".browser" />
   <include package=".restapi" />
