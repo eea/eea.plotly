@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1 - (2025-02-07)
+---------------------------
+* Change: permission typo
+  [razvanMiu]
+
 1.0 - (2025-02-06)
 ---------------------------
 * Change: Release [razvanMiu]
