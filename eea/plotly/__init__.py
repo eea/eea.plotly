@@ -9,3 +9,6 @@ EEAMessageFactory = MessageFactory('eea')
 def initialize(context):
     """Initializer called when used as a Zope 2 product.
     """
+
+
+__all__ = ['initialize']
