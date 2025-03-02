@@ -14,6 +14,14 @@ TEMPLATES_SCHEMA = json.dumps({
     }
 })
 
+THEMES_SCHEMA = json.dumps({
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {}
+    }
+})
+
 
 class IPlotlyLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
@@ -21,6 +29,17 @@ class IPlotlyLayer(IDefaultBrowserLayer):
 
 class IPlotlySettings(Interface):
     """Client settings for EEA Plotly."""
+    themes = JSONField(
+        title=_(u"Themes"),
+        description=_(
+            u"The JSON representation of plotly themes."
+        ),
+        schema=THEMES_SCHEMA,
+        default=[],
+        widget="plotly_themes",
+        required=False
+    )
+
     templates = JSONField(
         title=_(u"Templates"),
         description=_(

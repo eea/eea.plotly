@@ -18,10 +18,16 @@ class PlotlySettingsGet(Service):
         """Reply"""
         if not IPlotlyLayer.providedBy(self.request):
             return {
+                "themes": [],
                 "templates": []
             }
 
         return {
+            "themes": api.portal.get_registry_record(
+                "themes",
+                interface=IPlotlySettings,
+                default=[]
+            ),
             "templates": api.portal.get_registry_record(
                 "templates",
                 interface=IPlotlySettings,
