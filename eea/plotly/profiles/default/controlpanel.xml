@@ -9,6 +9,6 @@
       icon_expr=""
       url_expr="string:${portal_url}/@@plotly-controlpanel"
       visible="True">
-    <permission>eea.plotly: Managee</permission>
+    <permission>eea.plotly: Manage</permission>
   </configlet>
 </object>

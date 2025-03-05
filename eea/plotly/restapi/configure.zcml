@@ -11,7 +11,7 @@
 
   <plone:service
     method="GET"
-    name="@plotly_templates"
+    name="@plotly_settings"
     for="Products.CMFCore.interfaces.ISiteRoot"
     factory=".get.PlotlySettingsGet"
     permission="zope2.View"
