@@ -22,15 +22,33 @@ class PlotlySettingsGet(Service):
                 "templates": []
             }
 
+        themes = api.portal.get_registry_record(
+            "themes",
+            interface=IPlotlySettings,
+            default=[]
+        )
+
+        templates = api.portal.get_registry_record(
+            "templates",
+            interface=IPlotlySettings,
+            default=[]
+        )
+
+        for template in templates:
+            layout = template.get(
+                "visualization", {}).get(
+                "chartData", {}).get(
+                "layout", None)
+            if layout:
+                themeId = layout.get("template", {}).get("id", None)
+                if not themeId and len(themes) > 0:
+                    layout["template"] = themes[0]
+                elif themeId:
+                    for theme in themes:
+                        if theme.get("id") == themeId:
+                            layout["template"] = theme
+
         return {
-            "themes": api.portal.get_registry_record(
-                "themes",
-                interface=IPlotlySettings,
-                default=[]
-            ),
-            "templates": api.portal.get_registry_record(
-                "templates",
-                interface=IPlotlySettings,
-                default=[]
-            )
+            "themes": themes,
+            "templates": templates
         }
