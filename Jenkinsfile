@@ -3,7 +3,7 @@ pipeline {
 
   environment {
         GIT_NAME = "eea.plotly"
-        SONARQUBE_TAGS = "www.eea.europa.eu,biodiversity.europa.eu,industry.eea.europa.eu,forest.eea.europa.eu,demo-www.eea.europa.eu"
+        SONARQUBE_TAGS = "www.eea.europa.eu,biodiversity.europa.eu,industry.eea.europa.eu,forest.eea.europa.eu,demo-www.eea.europa.eu,www.eea.europa.eu-en"
     }
 
   stages {
