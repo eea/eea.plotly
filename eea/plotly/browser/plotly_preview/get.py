@@ -1,15 +1,25 @@
 """RestAPI enpoint @plotly GET"""
+import json
+import copy
+
 from eea.plotly.interfaces import IPlotlySettings
 from plone import api
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from Products.Five.browser import BrowserView
 import plotly.io as pio
-import json
-import copy
 
 
 def deepUpdate(original, update):
+    """Deep update a dictionary original with another dictionary update.
+
+    Args:
+        original (dict): Dictionary to update
+        update (dict): Dictionary with updates
+
+    Returns:
+        dict: Updated dictionary
+    """
     for key, value in update.items():
         if isinstance(
                 value, dict) and key in original and isinstance(

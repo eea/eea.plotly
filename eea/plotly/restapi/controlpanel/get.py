@@ -41,7 +41,7 @@ class PlotlySettingsGet(Service):
                 "layout", None)
             if layout:
                 themeId = layout.get("template", {}).get("id", None)
-                if not themeId and len(themes) > 0:
+                if not themeId and themes:
                     layout["template"] = themes[0]
                 elif themeId:
                     for theme in themes:
