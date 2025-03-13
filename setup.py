@@ -43,6 +43,8 @@ setup(
         'setuptools',
         "plone.volto",
         # -*- Extra requirements: -*-
+        'plotly',
+        'kaleido',
     ],
     extras_require={
         'test': [

@@ -8,6 +8,11 @@
   <include file="profiles.zcml" />
   <include file="permissions.zcml" />
 
+  <adapter
+    factory=".controlpanel.PlotlyControlpanel"
+    name="plotly"
+  />
+
   <include package=".browser" />
   <include package=".restapi" />
   <include package=".upgrades" />

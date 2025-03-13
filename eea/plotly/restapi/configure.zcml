@@ -4,17 +4,6 @@
 
   <include package="plone.restapi" />
 
-  <adapter
-    factory=".controlpanel.PlotlyControlpanel"
-    name="plotly"
-  />
-
-  <plone:service
-    method="GET"
-    name="@plotly_settings"
-    for="Products.CMFCore.interfaces.ISiteRoot"
-    factory=".get.PlotlySettingsGet"
-    permission="zope2.View"
-  />
+  <include package=".controlpanel" />
 
 </configure>
