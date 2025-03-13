@@ -1,5 +1,6 @@
 <configure
   xmlns="http://namespaces.zope.org/zope"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
   xmlns:browser="http://namespaces.zope.org/browser">
 
   <browser:view
@@ -7,6 +8,7 @@
     for="eea.api.dataconnector.interfaces.IDataVisualization"
     class=".get.PlotlyPreview"
     permission="zope2.View"
+    zcml:condition="installed eea.api.dataconnector"
   />
 
 </configure>
