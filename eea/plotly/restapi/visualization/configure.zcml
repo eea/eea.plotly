@@ -1,0 +1,19 @@
+<configure xmlns="http://namespaces.zope.org/zope" xmlns:plone="http://namespaces.plone.org/plone">
+
+    <plone:service
+        method="GET"
+        for="eea.plotly.behaviors.IPlotlyVisualization"
+        factory=".get.VisualizationGet"
+        name="@visualization"
+        permission="zope2.View"
+    />
+
+    <plone:service
+        method="GET"
+        for="eea.plotly.behaviors.IPlotlyVisualization"
+        factory=".get.VisualizationLayoutGet"
+        name="@visualization-layout"
+        permission="zope2.View"
+    />
+
+</configure>

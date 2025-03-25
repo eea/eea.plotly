@@ -4,10 +4,8 @@ from plone.restapi.services import Service
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-from eea.plotly.interfaces import (
-    IPlotlySettings,
-    IPlotlyLayer
-)
+from eea.plotly.interfaces import IPlotlyLayer
+from eea.plotly.controlpanel import IPlotlySettings
 
 
 @implementer(IPublishTraverse)
@@ -37,7 +35,6 @@ class PlotlySettingsGet(Service):
         for template in templates:
             layout = template.get(
                 "visualization", {}).get(
-                "chartData", {}).get(
                 "layout", None)
             if layout:
                 themeId = layout.get("template", {}).get("id", None)

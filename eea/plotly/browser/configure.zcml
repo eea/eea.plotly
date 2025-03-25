@@ -1,16 +1,26 @@
-<configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  i18n_domain="eea">
+<configure xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser" i18n_domain="eea">
 
-  <include package=".plotly_preview" />
+    <browser:page
+        name="plotly-controlpanel"
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        class=".controlpanel.PlotlyControlPanelFormWrapper"
+        layer="eea.plotly.interfaces.IPlotlyLayer"
+        permission="cmf.ManagePortal"
+    />
 
-  <browser:page
-    name="plotly-controlpanel"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    permission="cmf.ManagePortal"
-    class=".controlpanel.PlotlyControlPanelFormWrapper"
-    layer="eea.plotly.interfaces.IPlotlyLayer"
-  />
+    <browser:page
+        name="view"
+        for="eea.plotly.behaviors.IPlotlyVisualization"
+        template="pt/visualization_view.pt"
+        permission="zope2.View"
+    />
+
+    <browser:view
+        name="plotly_preview.svg"
+        for="eea.plotly.behaviors.IPlotlyVisualization"
+        class=".preview.PlotlyPreview"
+        permission="zope2.View"
+    />
 
 </configure>

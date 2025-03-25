@@ -2,7 +2,7 @@
 from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
 from plone.app.registry.browser.controlpanel import RegistryEditForm
 
-from eea.plotly.interfaces import IPlotlySettings
+from eea.plotly.controlpanel import IPlotlySettings
 
 
 class PlotlyRegistryEditForm(RegistryEditForm):

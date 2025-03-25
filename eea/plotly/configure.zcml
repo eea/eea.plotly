@@ -1,20 +1,30 @@
-<configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:i18n="http://namespaces.zope.org/i18n"
-  i18n_domain="eea">
+<configure xmlns="http://namespaces.zope.org/zope" xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="eea">
 
-  <i18n:registerTranslations directory="locales" />
+    <i18n:registerTranslations directory="locales" />
 
-  <include file="profiles.zcml" />
-  <include file="permissions.zcml" />
+    <include file="profiles.zcml" />
+    <include file="permissions.zcml" />
 
-  <adapter
-    factory=".controlpanel.PlotlyControlpanel"
-    name="plotly"
-  />
+    <include package=".browser" />
+    <include package=".restapi" />
+    <include package=".serializer" />
+    <include package=".deserializer" />
+    <include package=".upgrades" />
 
-  <include package=".browser" />
-  <include package=".restapi" />
-  <include package=".upgrades" />
+    <interface interface="eea.plotly.interfaces.IPlotlyVisualization" />
+
+    <adapter
+        factory=".controlpanel.PlotlyControlpanel"
+        name="plotly"
+    />
+
+    <plone:behavior
+        name="eea.plotly.visualization"
+        title="EEA-Viz_Plotly"
+        description="Allows adding an interactive plotly chart."
+        provides="eea.plotly.behaviors.IPlotlyVisualization"
+    />
 
 </configure>

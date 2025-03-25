@@ -1,13 +1,11 @@
-<configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:plone="http://namespaces.plone.org/plone">
+<configure xmlns="http://namespaces.zope.org/zope" xmlns:plone="http://namespaces.plone.org/plone">
 
-  <plone:service
-    method="GET"
-    name="@plotly_settings"
-    for="Products.CMFCore.interfaces.ISiteRoot"
-    factory=".get.PlotlySettingsGet"
-    permission="zope2.View"
-  />
+    <plone:service
+        method="GET"
+        name="@plotly_settings"
+        for="Products.CMFCore.interfaces.ISiteRoot"
+        factory=".get.PlotlySettingsGet"
+        permission="zope2.View"
+    />
 
 </configure>
