@@ -66,7 +66,7 @@ class PlotlyPreview(BrowserView):
 
         fig = pio.from_json(json.dumps(visualization), skip_invalid=True)
 
-        image_bytes = fig.to_image(format="svg")
+        image = fig.to_image(format="svg")
 
         sh = self.request.response.setHeader
 
@@ -76,7 +76,7 @@ class PlotlyPreview(BrowserView):
         )
         sh("Content-Disposition", "inline; filename=%s.svg" % "x")
 
-        return image_bytes
+        return image
 
     def publishTraverse(self, request, name):
         """used for traversal via publisher, i.e. when using as a url"""

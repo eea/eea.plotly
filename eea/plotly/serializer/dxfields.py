@@ -30,14 +30,9 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
             # The accept type is invalid. Skip it.
             return None
         data = file.data
-        if not data or subtype not in ["csv", 'tsv', "json"]:
+        if not data or subtype not in ["csv", 'tsv']:
             return None
         decoded = data.decode('utf-8')
-        if subtype == "json":
-            try:
-                return json.loads(decoded)
-            except json.JSONDecodeError:
-                return None
         try:
             csv.Sniffer().sniff(decoded)
             delimiter = ',' if subtype == "csv" else '\t'
@@ -59,6 +54,7 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
         dataSources = self.fileToJson(self.context.file)
         if dataSources:
             value["dataSources"] = dataSources
+            # value["dataSourcesOrder"] = [key for key in dataSources.keys()]
 
         value = sanitizeVisualization(value)
 

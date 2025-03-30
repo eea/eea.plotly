@@ -24,6 +24,7 @@ def sanitizeVisualization(v={}):
         "layout": v.get("layout", chartData.get("layout", {})),
         # "frames": v.get("frames", chartData.get("frames", [])),
         "dataSources": dataSources,
+        # "dataSourcesOrder": v.get("dataSourcesOrder", []),
     }
     setProperty(viz, "provider_url", v.get("provider_url", None))
     setProperty(viz, "variation", v.get("variation", None))
