@@ -2,7 +2,7 @@
 
 import copy
 import csv
-import json
+from io import StringIO
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
@@ -12,6 +12,7 @@ from plone.restapi.serializer.utils import uid_to_url
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.interfaces import IFieldSerializer
 from eea.plotly.interfaces import IPlotlyVisualizationField
+from eea.plotly.io_csv import CsvReader
 from eea.plotly.utils import sanitizeVisualization
 
 
@@ -24,26 +25,24 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
         """Convert binary file data to JSON"""
         if not file:
             return None
-        try:
-            _, subtype = file.contentType.split("/")
-        except ValueError:
-            # The accept type is invalid. Skip it.
-            return None
         data = file.data
-        if not data or subtype not in ["csv", 'tsv']:
+        if not data:
             return None
-        decoded = data.decode('utf-8')
+        buff = StringIO(data.decode('utf-8'))
         try:
-            csv.Sniffer().sniff(decoded)
-            delimiter = ',' if subtype == "csv" else '\t'
-            csv_data = decoded.splitlines()
-            reader = csv.DictReader(csv_data, delimiter=delimiter)
             data = {}
-            for row in reader:
-                for key, value in row.items():
-                    if key not in data:
-                        data[key] = []
-                    data[key].append(value)
+            headers = []
+            i = -1
+            for row in CsvReader(buff):
+                i += 1
+                j = -1
+                for cell in row:
+                    if i == 0:
+                        data[cell] = []
+                        headers.append(cell)
+                        continue
+                    j += 1
+                    data[headers[j]].append(cell)
             return data
         except csv.Error:
             return None
@@ -54,7 +53,6 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
         dataSources = self.fileToJson(self.context.file)
         if dataSources:
             value["dataSources"] = dataSources
-            # value["dataSourcesOrder"] = [key for key in dataSources.keys()]
 
         value = sanitizeVisualization(value)
 

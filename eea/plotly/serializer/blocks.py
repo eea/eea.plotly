@@ -14,7 +14,7 @@ from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from eea.plotly.serializer.utils import getUid, getProperties, getVisualization
-from eea.plotly.utils import isExpanded, getLinkHTML, sanitizeBlockData
+from eea.plotly.utils import isExpanded, getLinkHTML
 
 
 @implementer(IBlockFieldSerializationTransformer)
@@ -33,14 +33,12 @@ class EmbedVisualizationSerializationTransformer:
         self.request = request
 
     def __call__(self, value):
-        value = sanitizeBlockData(value)
-
         self.init(value)
 
         url = uid_to_url(self.state.get("url"))
         doc_json = self.state.get("doc_json")
 
-        value["viz_url"] = url
+        value["vis_url"] = url
 
         if self.error:
             return {
@@ -62,16 +60,14 @@ class EmbedVisualizationSerializationTransformer:
         }
 
         if isExpanded(self.request, "visualization"):
-            response["visualization"] = getVisualization(
-                context=doc_json, layout=True
-            )
+            response["visualization"] = getVisualization(context=doc_json)
 
         return response
 
     def init(self, value):
         """ Init """
         self.state = {}
-        self.state["url"] = value.get("viz_url")
+        self.state["url"] = value.get("vis_url")
 
         if not self.state["url"]:
             return

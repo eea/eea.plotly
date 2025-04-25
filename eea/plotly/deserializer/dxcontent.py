@@ -1,4 +1,3 @@
-import csv
 import json
 import plotly.io as pio
 from io import StringIO
@@ -9,34 +8,35 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 from eea.plotly.behaviors import IPlotlyVisualization
-
-
-mime_types = {
-    "csv": "text/csv",
-    "tsv": "text/tsv",
-}
+from eea.plotly.io_csv import CsvWriter
 
 
 @implementer(IDeserializeFromJson)
 @adapter(IPlotlyVisualization, Interface)
 class DeserializeVisualizationFromJson(DeserializeFromJson):
-    def jsonToBinary(self, data, subtype="csv"):
+    def jsonToBinary(self, data):
         """Convert JSON data to binary"""
         if not data:
             return None
+
         output = StringIO()
-        csvData = []
-        delimiter = ',' if subtype == "csv" else '\t'
-        for key, values in data.items():
+
+        # Extract columns
+        columns = list(data.keys())
+
+        # Extract rows per column
+        rows = []
+
+        for column in columns:
+            values = [column] + data[column]
             for i, value in enumerate(values):
-                if i >= len(csvData):
-                    csvData.append({})
-                csvData[i][key] = value
-        writer = csv.DictWriter(
-            output, fieldnames=csvData[0].keys(),
-            delimiter=delimiter)
-        writer.writeheader()
-        writer.writerows(csvData)
+                if len(rows) < i + 1:
+                    rows.append([value])
+                else:
+                    rows[i].append(value)
+
+        CsvWriter(output).writerows(rows)
+
         return output.getvalue().encode('utf-8')
 
     def __call__(
@@ -74,20 +74,15 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
             contentType="image/svg+xml"
         )
 
-        # Handle data sources
-        ctype = 'csv'
-        if hasattr(
-                self.context, 'file') and hasattr(
-                self.context.file, 'contentType'):
-            ctype = self.context.file.contentType.split("/")[1]
-
         data = self.jsonToBinary(self.context.visualization.get(
-            "dataSources", {}), ctype)
+            "dataSources", {})
+        )
+
         if data:
             self.context.file = NamedBlobFile(
                 data=data,
-                filename=f"data.{ctype}",
-                contentType=mime_types[ctype]
+                filename="data.csv",
+                contentType="text/csv"
             )
 
         if "dataSources" in self.context.visualization:

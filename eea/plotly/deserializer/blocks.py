@@ -6,7 +6,7 @@ from plone.restapi.deserializer.utils import path2uid
 from zope.component import adapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
-from eea.plotly.utils import getLink, delProperty, sanitizeBlockData
+from eea.plotly.utils import getLink, delProperty
 
 
 @implementer(IBlockFieldDeserializationTransformer)
@@ -22,12 +22,11 @@ class EmbedVisualizationDeserializationTransformer:
         self.request = request
 
     def __call__(self, value):
-        value = sanitizeBlockData(value)
         delProperty(value, 'visualization')
         delProperty(value, 'properties')
         delProperty(value, 'image_scales')
-        if 'viz_url' in value:
-            value['viz_url'] = path2uid(
-                context=self.context, link=getLink(value['viz_url'])
+        if 'vis_url' in value:
+            value['vis_url'] = path2uid(
+                context=self.context, link=getLink(value['vis_url'])
             )
         return value

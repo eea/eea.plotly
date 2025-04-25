@@ -16,6 +16,7 @@ def sanitizeVisualization(v={}):
 
     # backward compatibility
     chartData = v.get("chartData", {})
+    columns = v.get("columns", [])
     dataSources = v.get("data_source", {})
     dataSources.update(v.get("dataSources", {}))
 
@@ -23,6 +24,7 @@ def sanitizeVisualization(v={}):
         "data": v.get("data", chartData.get("data", [])),
         "layout": v.get("layout", chartData.get("layout", {})),
         # "frames": v.get("frames", chartData.get("frames", [])),
+        "columns": columns,
         "dataSources": dataSources,
         # "dataSourcesOrder": v.get("dataSourcesOrder", []),
     }
@@ -34,21 +36,6 @@ def sanitizeVisualization(v={}):
     setProperty(viz, "label", v.get("label", None))
 
     return viz
-
-
-def sanitizeBlockData(data={}):
-    """Sanitize Block"""
-
-    block = {
-        **data
-    }
-
-    if "vis_url" in block and 'viz_url' not in block:
-        block["viz_url"] = block["vis_url"]
-
-    delProperty(block, 'vis_url')
-
-    return block
 
 
 def getLink(path):
