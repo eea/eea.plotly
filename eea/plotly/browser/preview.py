@@ -66,6 +66,9 @@ class PlotlyPreview(BrowserView):
 
         fig = pio.from_json(json.dumps(visualization), skip_invalid=True)
 
+        if "template" not in visualization["layout"]:
+            fig.update_layout(template=None)
+
         image = fig.to_image(format="svg")
 
         sh = self.request.response.setHeader
