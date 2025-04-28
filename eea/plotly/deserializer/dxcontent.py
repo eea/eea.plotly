@@ -27,8 +27,15 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
         # Extract rows per column
         rows = []
 
+        # Determine the maximum length of the columns
+        max_length = 0
+        for column in columns:
+            max_length = max(max_length, len(data[column]))
+
         for column in columns:
             values = [column] + data[column]
+            # Fill the values with None to match the max length
+            values += [None] * (max_length - len(data[column]))
             for i, value in enumerate(values):
                 if len(rows) < i + 1:
                     rows.append([value])
