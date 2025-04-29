@@ -59,7 +59,7 @@ class EmbedVisualizationSerializationTransformer:
             "properties": self.state["properties"]
         }
 
-        if isExpanded(self.request, "visualization"):
+        if isExpanded(self.request):
             response["visualization"] = getVisualization(context=doc_json)
 
         return response

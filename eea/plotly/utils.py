@@ -64,17 +64,9 @@ def getLinkHTML(url, text=None):
     return '<a href="' + url + '" target="_blank">' + text + '</a>'
 
 
-def isExpanded(request, name):
+def isExpanded(request):
     """ Check if a given field is expanded. """
-
-    expands = request.form.get("expand", [])
-    if isinstance(expands, str):
-        if "," in expands:
-            # use of expands (with commas) was deprecated in plone.restapi 8
-            # undeprecated with plone.restapi 9
-            expands = expands.split(",")
-        else:
-            # allow still the use of non marked :list parameters present
-            expands = [expands]
-
-    return name in expands
+    expanded = request.form.get("expand.visualization", None)
+    if expanded is None:
+        return False
+    return True
