@@ -7,6 +7,8 @@ from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.event import notify
+from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 from eea.plotly.behaviors import IPlotlyVisualization
 from eea.plotly.io_csv import CsvWriter
 
@@ -64,23 +66,6 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
         if not ok:
             return self.context
 
-        # Handle preview image
-        fig = pio.from_json(
-            json.dumps({
-                "data": self.context.visualization.get("data", []),
-                "layout": self.context.visualization.get("layout", {}),
-                "frames": self.context.visualization.get("frames", [])
-            }),
-            skip_invalid=True
-        )
-
-        image = fig.to_image(format="svg")
-        self.context.preview_image = NamedBlobImage(
-            data=image,
-            filename="preview.svg",
-            contentType="image/svg+xml"
-        )
-
         data = self.jsonToBinary(self.context.visualization.get(
             "dataSources", {})
         )
@@ -94,5 +79,33 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
 
         if "dataSources" in self.context.visualization:
             del self.context.visualization["dataSources"]
+
+        # Notify the object modified event
+        modified = []
+        modified.append(
+            Attributes(
+                IPlotlyVisualization,
+                "IPlotlyVisualization.visualization",
+                "IPlotlyVisualization.file"
+            )
+        )
+        notify(ObjectModifiedEvent(self.context, *modified))
+
+        # Handle preview image
+        fig = pio.from_json(
+            json.dumps({
+                "data": self.context.visualization.get("data", []),
+                "layout": self.context.visualization.get("layout", {}),
+                "frames": self.context.visualization.get("frames", [])
+            }),
+            skip_invalid=True
+        )
+
+        image = fig.to_image(format="svg", width=1200, height=900)
+        self.context.preview_image = NamedBlobImage(
+            data=image,
+            filename="preview.svg",
+            contentType="image/svg+xml"
+        )
 
         return self.context

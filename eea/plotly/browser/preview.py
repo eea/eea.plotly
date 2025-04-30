@@ -69,7 +69,7 @@ class PlotlyPreview(BrowserView):
         if "template" not in visualization["layout"]:
             fig.update_layout(template=None)
 
-        image = fig.to_image(format="svg")
+        image = fig.to_image(format="svg", width=1200, height=900)
 
         sh = self.request.response.setHeader
 
