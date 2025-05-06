@@ -70,12 +70,11 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
             "dataSources", {})
         )
 
-        if data:
-            self.context.file = NamedBlobFile(
-                data=data,
-                filename="data.csv",
-                contentType="text/csv"
-            )
+        self.context.file = NamedBlobFile(
+            data=data if data else b"",
+            filename="data.csv",
+            contentType="text/csv"
+        )
 
         if "dataSources" in self.context.visualization:
             del self.context.visualization["dataSources"]
