@@ -20,12 +20,15 @@ class EEAFixture(PloneSandboxLayer):
         """
         import eea.plotly
         import plone.restapi
+        import plone.namedfile
 
         self.loadZCML(package=plone.restapi)
+        self.loadZCML(package=plone.namedfile)
         self.loadZCML(package=eea.plotly)
 
         installProduct(app, "plone.restapi")
-        z2.installProduct(app, 'eea.plotly')
+        installProduct(app, "plone.namedfile")
+        installProduct(app, 'eea.plotly')
 
     def setUpPloneSite(self, portal):
         """ Setup Plone
