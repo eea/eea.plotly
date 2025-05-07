@@ -1,18 +1,16 @@
-<configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-  i18n_domain="eea">
+<configure xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup" i18n_domain="eea">
 
-  <genericsetup:upgradeSteps
-    source="*"
-    destination="1.0"
-    profile="eea.plotly:default">
+    <genericsetup:upgradeSteps
+        source="*"
+        destination="1.0"
+        profile="eea.plotly:default">
 
-    <genericsetup:upgradeDepends
-       title="Import all steps from eea.plotly default profile"
-       import_profile="eea.plotly:default"
-      />
+        <genericsetup:upgradeDepends
+            title="Import all steps from eea.plotly default profile"
+            import_profile="eea.plotly:default"
+        />
 
-  </genericsetup:upgradeSteps>
+    </genericsetup:upgradeSteps>
 
 </configure>

@@ -1,0 +1,17 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+  lang="en"
+  metal:use-macro="context/@@main_template/macros/master"
+  i18n:domain="plone">
+
+  <body>
+    <metal:main fill-slot="main">
+      <h1 class="documentFirstHeading" tal:content="context/Title">Title</h1>
+
+      <img src="" tal:attributes="src string:${context/absolute_url}/@@plotly_preview.svg" i18n:attributes="alt" alt="Preview" />
+
+    </metal:main>
+  </body>
+</html>

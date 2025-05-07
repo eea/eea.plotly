@@ -1,3 +1,4 @@
+# pylint: disable=consider-using-with
 """ eea.plotly Installer
 """
 import os
@@ -43,6 +44,9 @@ setup(
         'setuptools',
         "plone.volto",
         # -*- Extra requirements: -*-
+        "collective.folderishtypes",
+        'plotly==5.24.1',
+        'kaleido',
     ],
     extras_require={
         'test': [

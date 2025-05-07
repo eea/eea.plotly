@@ -1,5 +1,6 @@
 """ Base test cases
 """
+# pylint: disable=C0415
 from Products.CMFPlone import setuphandlers
 from plone.testing import z2
 from plone.app.testing import TEST_USER_ID
@@ -7,6 +8,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import setRoles
+from plone.testing.zope import installProduct
 
 
 class EEAFixture(PloneSandboxLayer):
@@ -17,8 +19,10 @@ class EEAFixture(PloneSandboxLayer):
         """ Setup Zope
         """
         import eea.plotly
+
         self.loadZCML(package=eea.plotly)
-        z2.installProduct(app, 'eea.plotly')
+
+        installProduct(app, 'eea.plotly')
 
     def setUpPloneSite(self, portal):
         """ Setup Plone

@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <rolemap>
   <permissions>
-    <permission name="eea.plotly: Manage"
-                acquire="True">
-        <role name="Owner"/>
-        <role name="Manager"/>
-        <role name="Site Administrator"/>
+    <permission name="eea.plotly: Manage" acquire="True">
+      <role name="Manager" />
+      <role name="Site Administrator" />
+    </permission>
+    <permission name="EEA-Viz: Add Chart (interactive)" acquire="True">
+      <role name="Manager" />
+      <role name="Site Administrator" />
+      <role name="Contributor" />
     </permission>
   </permissions>
 </rolemap>
