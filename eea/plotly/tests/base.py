@@ -8,7 +8,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import setRoles
-from plone.testing.zope import installProduct, uninstallProduct
+from plone.testing.zope import installProduct
 
 
 class EEAFixture(PloneSandboxLayer):
