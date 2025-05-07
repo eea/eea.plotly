@@ -8,6 +8,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import setRoles
+from plone.testing.zope import installProduct, uninstallProduct
 
 
 class EEAFixture(PloneSandboxLayer):
@@ -18,7 +19,12 @@ class EEAFixture(PloneSandboxLayer):
         """ Setup Zope
         """
         import eea.plotly
+        import plone.restapi
+
+        self.loadZCML(package=plone.restapi)
         self.loadZCML(package=eea.plotly)
+
+        installProduct(app, "plone.restapi")
         z2.installProduct(app, 'eea.plotly')
 
     def setUpPloneSite(self, portal):
