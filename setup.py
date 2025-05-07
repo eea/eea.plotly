@@ -44,6 +44,7 @@ setup(
         'setuptools',
         "plone.volto",
         # -*- Extra requirements: -*-
+        "collective.folderishtypes",
         'plotly==5.24.1',
         'kaleido',
     ],
