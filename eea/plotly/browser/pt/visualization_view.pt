@@ -10,7 +10,7 @@
     <metal:main fill-slot="main">
       <h1 class="documentFirstHeading" tal:content="context/Title">Title</h1>
 
-      <img src="" tal:attributes="src string:${context/absolute_url}/@@plotly_preview.svg" alt="Preview" />
+      <img src="" tal:attributes="src string:${context/absolute_url}/@@plotly_preview.svg" i18n:attributes="alt" alt="Preview" />
 
     </metal:main>
   </body>
