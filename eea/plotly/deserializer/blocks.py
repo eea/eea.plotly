@@ -1,3 +1,4 @@
+# pylint: disable=old-style-class
 """ block-related utils """
 
 from plone.restapi.behaviors import IBlocks

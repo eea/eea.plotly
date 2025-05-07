@@ -1,3 +1,5 @@
+# pylint: disable=old-style-class
+# pylint: disable=syntax-error
 """ block-related utils """
 
 from AccessControl import Unauthorized

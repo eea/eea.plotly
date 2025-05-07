@@ -1,12 +1,17 @@
+# pylint: disable=dangerous-default-value
+""" Utility functions for Plotly """
+
 from urllib.parse import urlparse
 
 
 def setProperty(obj, name, value):
+    """ Set property """
     if value is not None:
         obj[name] = value
 
 
 def delProperty(obj, name):
+    """ Delete property """
     if name in obj:
         del obj[name]
 
@@ -39,9 +44,7 @@ def sanitizeVisualization(v={}):
 
 
 def getLink(path):
-    """
-      Get link
-      """
+    """ Get link """
 
     URL = urlparse(path)
 
@@ -51,9 +54,7 @@ def getLink(path):
 
 
 def getLinkHTML(url, text=None):
-    """
-      Get link HTML
-      """
+    """ Get link HTML """
 
     if not url:
         return url

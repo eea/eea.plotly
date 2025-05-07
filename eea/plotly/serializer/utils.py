@@ -1,3 +1,6 @@
+# pylint: disable=syntax-error
+""" block-related utils """
+
 import re
 from plone.restapi.serializer.utils import RESOLVEUID_RE
 from plone.restapi.deserializer.utils import path2uid

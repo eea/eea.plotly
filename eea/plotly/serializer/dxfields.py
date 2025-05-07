@@ -21,11 +21,11 @@ from eea.plotly.utils import sanitizeVisualization
 class VisualizationFieldSerializer(DefaultFieldSerializer):
     """Visualization field serializer"""
 
-    def fileToJson(self, file):
+    def fileToJson(self, file_binary):
         """Convert binary file data to JSON"""
-        if not file:
+        if not file_binary:
             return None
-        data = file.data
+        data = file_binary.data
         if not data:
             return None
         buff = StringIO(data.decode('utf-8-sig'))

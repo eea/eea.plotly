@@ -1,6 +1,7 @@
+""" Deserialize Plotly visualization from JSON """
+from io import StringIO
 import json
 import plotly.io as pio
-from io import StringIO
 from plone.namedfile.file import NamedBlobFile, NamedBlobImage
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.deserializer.dxcontent import DeserializeFromJson
@@ -16,6 +17,8 @@ from eea.plotly.io_csv import CsvWriter
 @implementer(IDeserializeFromJson)
 @adapter(IPlotlyVisualization, Interface)
 class DeserializeVisualizationFromJson(DeserializeFromJson):
+    """ Deserialize Plotly visualization from JSON """
+
     def jsonToBinary(self, data):
         """Convert JSON data to binary"""
         if not data:
@@ -52,7 +55,7 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
             self, validate_all=False, data=None, create=False,
             mask_validation_errors=True):
 
-        super().__call__(
+        super(DeserializeVisualizationFromJson, self).__call__(
             validate_all, data, create, mask_validation_errors
         )
 

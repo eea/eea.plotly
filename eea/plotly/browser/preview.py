@@ -1,16 +1,18 @@
 """RestAPI enpoint @plotly GET"""
-from eea.plotly.controlpanel import IPlotlySettings
-from eea.plotly.utils import sanitizeVisualization
+
+import copy
+import json
+import plotly.io as pio
 from plone import api
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from Products.Five.browser import BrowserView
-import plotly.io as pio
-import json
-import copy
+from eea.plotly.controlpanel import IPlotlySettings
+from eea.plotly.utils import sanitizeVisualization
 
 
 def deepUpdate(original, update):
+    """ Recursively update a dictionary with another dictionary."""
     for key, value in update.items():
         if isinstance(
                 value, dict) and key in original and isinstance(
