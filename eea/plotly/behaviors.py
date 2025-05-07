@@ -29,7 +29,7 @@ class IPlotlyVisualization(model.Schema):
         title="File",
         required=False,
         description="Data sources file",
-        accept=["text/csv", 'text/tsv'],
+        accept=("text/csv", 'text/tsv'),
         readonly=True,
     )
 
