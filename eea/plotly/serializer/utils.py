@@ -1,4 +1,3 @@
-# pylint: disable=syntax-error
 """ block-related utils """
 
 import re
