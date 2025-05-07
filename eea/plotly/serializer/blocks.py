@@ -1,4 +1,3 @@
-# pylint: disable=old-style-class
 """ block-related utils """
 
 from AccessControl import Unauthorized

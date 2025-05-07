@@ -1,4 +1,3 @@
-# pylint: disable=old-style-class
 """CSV reader/writer that handles NULL values."""
 import csv
 NULL = 'NULL'

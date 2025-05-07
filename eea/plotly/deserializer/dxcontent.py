@@ -55,7 +55,7 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
             self, validate_all=False, data=None, create=False,
             mask_validation_errors=True):
 
-        super(DeserializeVisualizationFromJson, self).__call__(
+        super().__call__(
             validate_all, data, create, mask_validation_errors
         )
 

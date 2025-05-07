@@ -1,3 +1,4 @@
+# pylint: disable=consider-using-with
 """ eea.plotly Installer
 """
 import os
