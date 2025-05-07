@@ -19,15 +19,9 @@ class EEAFixture(PloneSandboxLayer):
         """ Setup Zope
         """
         import eea.plotly
-        import plone.restapi
-        import plone.namedfile
 
-        self.loadZCML(package=plone.restapi)
-        self.loadZCML(package=plone.namedfile)
         self.loadZCML(package=eea.plotly)
 
-        installProduct(app, "plone.restapi")
-        installProduct(app, "plone.namedfile")
         installProduct(app, 'eea.plotly')
 
     def setUpPloneSite(self, portal):
