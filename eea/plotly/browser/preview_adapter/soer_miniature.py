@@ -42,6 +42,8 @@ def serialize(context):
     """ Serialize the context for SOER miniature theme"""
 
     # Solve x axis range
+    if context.visualization is None or len(context.visualization["data"]) < 2:
+        return False
 
     years = context.visualization["data"][0].get("x", [])
     tickvals = context.visualization["layout"]["xaxis"].get("tickvals", [])
