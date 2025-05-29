@@ -3,6 +3,7 @@ import math
 
 
 def nice_step(vmin, vmax, target_ticks=5):
+    """ Calculate a 'nice' step size for the axis ticks. """
     span = abs(vmax - vmin)
     if span == 0:
         return 1  # arbitrary fallback

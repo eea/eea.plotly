@@ -1,4 +1,4 @@
-""""""
+""" Preview adapter for Plotly browser. """
 
 adapters = {
     "soer_miniature": (
