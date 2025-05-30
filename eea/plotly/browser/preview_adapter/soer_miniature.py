@@ -53,7 +53,7 @@ def serialize(context):
         max_year = getMax(years)
 
         context.visualization["layout"]["xaxis"]["range"] = [
-            min_year - 1, max_year + 1]
+            min_year - 2, max_year + 2]
         context.visualization["layout"]["xaxis"]["autorange"] = False
 
     # Solve y axis range
@@ -70,5 +70,10 @@ def serialize(context):
         context.visualization["layout"]["yaxis"]["range"] = [
             min_y - step, max_y + step]
         context.visualization["layout"]["yaxis"]["autorange"] = False
+
+    if "text" in context.visualization["data"][0]:
+        context.visualization["data"][0]["text"] = [
+            (t if t is None else " " + str(t))
+            for t in context.visualization["data"][0]["text"]]
 
     return True
