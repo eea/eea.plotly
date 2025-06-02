@@ -8,4 +8,12 @@
         permission="zope2.View"
     />
 
+    <plone:service
+        method="POST"
+        name="@plotly_settings_reset"
+        for="Products.CMFCore.interfaces.ISiteRoot"
+        factory=".reset.PlotlySettingsReset"
+        permission="eea.plotly.manage"
+    />
+
 </configure>
