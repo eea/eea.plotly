@@ -43,6 +43,7 @@ def serialize(context):
 
     # Solve x axis range
     if context.visualization is None or len(context.visualization["data"]) < 2:
+        context.visualization["layout"]["xaxis"]["showticklabels"] = False
         return False
 
     years = context.visualization["data"][0].get("x", [])

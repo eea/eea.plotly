@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5 - (2025-06-05)
+---------------------------
+* Change: soer_miniature: hide xaxis ticklabels if no data
+  [razvanMiu]
+
 1.4 - (2025-05-30)
 ---------------------------
 * Change: update soer_miniature preview adapter
