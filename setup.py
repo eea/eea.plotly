@@ -46,7 +46,7 @@ setup(
         # -*- Extra requirements: -*-
         "collective.folderishtypes",
         'plotly==5.24.1',
-        'kaleido',
+        'kaleido==0.2.1',
     ],
     extras_require={
         'test': [
