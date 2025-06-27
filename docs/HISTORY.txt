@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6 - (2025-06-24)
+---------------------------
+* Change: pin kaleido version to 0.2.1
+  [razvanMiu]
+
 1.5 - (2025-06-05)
 ---------------------------
 * Change: soer_miniature: hide xaxis ticklabels if no data
