@@ -120,7 +120,7 @@ def serialize(context):
         min_y = min_y if min_y < 0 else 0
         max_y = max_y if max_y > 0 else 0
 
-        nticks = int((context.height - top) / 100)
+        nticks = max(int((context.height - top) / 100), 2)
 
         step = exact_step(min_y, max_y, nticks)
 
