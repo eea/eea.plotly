@@ -36,12 +36,12 @@ def exact_step(vmin, vmax, target_ticks=5):
 
 def getMin(arr):
     """ Get minimum value from array """
-    return min(float(v) for v in arr if v)
+    return min(float(v) for v in arr if v is not None)
 
 
 def getMax(arr):
     """ Get maximum value from array """
-    return max(float(v) for v in arr if v)
+    return max(float(v) for v in arr if v is not None)
 
 
 def serialize(context):
