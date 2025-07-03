@@ -28,7 +28,7 @@ def nice_step(vmin, vmax, target_ticks=5):
 
 
 def exact_step(vmin, vmax, target_ticks=5):
-    """Return the exact step size to have target_ticks between vmin and vmax."""
+    """Get the exact step size to have target_ticks between vmin and vmax."""
     if target_ticks < 2:
         raise ValueError("target_ticks must be at least 2 to define a range.")
     return abs(vmax - vmin) / (target_ticks - 1)
