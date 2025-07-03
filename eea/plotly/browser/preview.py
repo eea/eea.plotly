@@ -9,6 +9,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from Products.Five.browser import BrowserView
 from eea.plotly.controlpanel import IPlotlySettings
 from eea.plotly.utils import sanitizeVisualization
+from eea.plotly.io_json import JSONEncoder
 
 from .preview_adapter.adapter import get_preview_adapter
 
@@ -74,7 +75,9 @@ class PlotlyPreview(BrowserView):
 
         get_preview_adapter(self, self.name)
 
-        fig = pio.from_json(json.dumps(self.visualization), skip_invalid=True)
+        fig = pio.from_json(
+            json.dumps(self.visualization, cls=JSONEncoder),
+            skip_invalid=True)
 
         if "template" not in self.visualization["layout"]:
             fig.update_layout(template=None)

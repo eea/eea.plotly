@@ -12,6 +12,7 @@ from zope.event import notify
 from zope.lifecycleevent import Attributes, ObjectModifiedEvent
 from eea.plotly.behaviors import IPlotlyVisualization
 from eea.plotly.io_csv import CsvWriter
+from eea.plotly.io_json import JSONEncoder
 
 
 @implementer(IDeserializeFromJson)
@@ -99,7 +100,9 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
                 "data": self.context.visualization.get("data", []),
                 "layout": self.context.visualization.get("layout", {}),
                 "frames": self.context.visualization.get("frames", [])
-            }),
+            },
+                cls=JSONEncoder
+            ),
             skip_invalid=True
         )
 
