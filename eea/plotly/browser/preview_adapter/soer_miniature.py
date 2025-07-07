@@ -67,6 +67,7 @@ def serialize(context):
     if data[0].get("x") is not None and data[0].get("y") is not None:
         x_len = len(data[0].get("x") or [])
         y_len = len(data[0].get("y") or [])
+        text_len = len(data[0].get("text") or [])
 
         for index, val in enumerate(data[0]["y"]):
             if val and not first_val:
@@ -74,7 +75,7 @@ def serialize(context):
             if not first_val:
                 continue
             year = data[0]["x"][index] if index < x_len else None
-            text = data[0]["text"][index] if index < y_len else None
+            text = data[0]["text"][index] if index < text_len else None
             new_x.append(year)
             new_y.append(val)
             new_text.append(text)
