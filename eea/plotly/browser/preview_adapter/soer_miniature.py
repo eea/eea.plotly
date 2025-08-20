@@ -35,14 +35,22 @@ def exact_step(vmin, vmax, target_ticks=5):
     return abs(vmax - vmin) / (target_ticks - 1)
 
 
+def toFloat(v):
+    """ Convert value to float """
+    try:
+        return float(v)
+    except ValueError:
+        return 0
+
+
 def getMin(arr):
     """ Get minimum value from array """
-    return min(float(v) for v in arr if v is not None)
+    return min(toFloat(v) for v in arr if v is not None)
 
 
 def getMax(arr):
     """ Get maximum value from array """
-    return max(float(v) for v in arr if v is not None)
+    return max(toFloat(v) for v in arr if v is not None)
 
 
 def serialize(context):
@@ -85,8 +93,8 @@ def serialize(context):
         }
         return False
 
-    min_year = float("inf")
-    max_year = float("-inf")
+    min_year = toFloat("inf")
+    max_year = toFloat("-inf")
     first_val = None
     new_x = []
     new_y = []
@@ -111,12 +119,15 @@ def serialize(context):
         y_len = len(data[0].get("y") or [])
         text_len = len(data[0].get("text") or [])
 
+        if y_len < x_len:
+            data[0]["y"] = data[0]["y"] + [None] * (x_len - y_len)
+
         for index, val in enumerate(data[0]["y"]):
             if val and not first_val:
                 first_val = val
             if not first_val:
                 continue
-            year = float(data[0]["x"][index]) if index < x_len else None
+            year = toFloat(data[0]["x"][index]) if index < x_len else None
             text = data[0]["text"][index] if index < text_len else None
             new_x.append(year)
             new_y.append(val)
@@ -127,7 +138,7 @@ def serialize(context):
                 min_year = year
 
         if dotted_trace:
-            first_year = float(dotted_trace["x"][0])
+            first_year = toFloat(dotted_trace["x"][0])
             if first_year < min_year:
                 min_year = first_year
 
