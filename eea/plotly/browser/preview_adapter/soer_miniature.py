@@ -35,14 +35,22 @@ def exact_step(vmin, vmax, target_ticks=5):
     return abs(vmax - vmin) / (target_ticks - 1)
 
 
+def toFloat(v):
+    """ Convert value to float """
+    try:
+        return float(v)
+    except ValueError:
+        return 0
+
+
 def getMin(arr):
     """ Get minimum value from array """
-    return min(float(v) for v in arr if v is not None)
+    return min(toFloat(v) for v in arr if v is not None)
 
 
 def getMax(arr):
     """ Get maximum value from array """
-    return max(float(v) for v in arr if v is not None)
+    return max(toFloat(v) for v in arr if v is not None)
 
 
 def serialize(context):
@@ -53,28 +61,73 @@ def serialize(context):
     data = context.visualization["data"]
     layout = context.visualization["layout"]
 
+    top = (
+        layout.get("margin", {}).get("t") or
+        layout.get("template", {}).get("margin", {}).get("t")
+    ) or 0
+    nticks = max(int((context.height - top) / 100), 2)
+
     if len(data) < SOER_TRACES_COUNT:
         layout["xaxis"]["showticklabels"] = False
+        layout["xaxis"]["showgrid"] = False
+        layout["xaxis"]["autorange"] = False
+        layout["xaxis"]["range"] = [0, 1]
+        layout["xaxis"]["tickmode"] = "auto"
+        layout["xaxis"]["gridwidth"] = 4
+
+        layout["yaxis"]["showticklabels"] = False
+        layout["yaxis"]["showgrid"] = True
+        layout["yaxis"]["autorange"] = False
+        layout["yaxis"]["range"] = [0, nticks]
+        layout["yaxis"]["tickmode"] = "linear"
+        layout["yaxis"]["automargin"] = True
+        layout["yaxis"]["gridwidth"] = 4
+
+        del layout["template"]["layout"]["annotationdefaults"]
+        del layout["template"]["layout"]["yaxis"]["rangemode"]
+
+        layout["template"]["layout"]["annotationdefaults"] = {
+            "showarrow": False,
+            "xref": "paper",
+            "yref": "paper"
+        }
         return False
 
-    min_year = float("inf")
-    max_year = float("-inf")
+    min_year = toFloat("inf")
+    max_year = toFloat("-inf")
     first_val = None
     new_x = []
     new_y = []
     new_text = []
+    dotted_trace = None
+
+    # Custom dotted trace
+    trace_6 = None
+    if len(data) > 5:
+        trace_6 = data[5]
+
+    if trace_6 and trace_6.get("id") == "country_trend_dotted":
+        trace_6["mode"] = "lines"
+        dotted_trace = trace_6
+    elif trace_6:
+        trace_6["visible"] = False
+        trace_6["x"] = None
+        trace_6["y"] = None
 
     if data[0].get("x") is not None and data[0].get("y") is not None:
         x_len = len(data[0].get("x") or [])
         y_len = len(data[0].get("y") or [])
         text_len = len(data[0].get("text") or [])
 
+        if y_len < x_len:
+            data[0]["y"] = data[0]["y"] + [None] * (x_len - y_len)
+
         for index, val in enumerate(data[0]["y"]):
             if val and not first_val:
                 first_val = val
             if not first_val:
                 continue
-            year = data[0]["x"][index] if index < x_len else None
+            year = toFloat(data[0]["x"][index]) if index < x_len else None
             text = data[0]["text"][index] if index < text_len else None
             new_x.append(year)
             new_y.append(val)
@@ -83,6 +136,11 @@ def serialize(context):
                 max_year = year
             if val and year < min_year:
                 min_year = year
+
+        if dotted_trace:
+            first_year = toFloat(dotted_trace["x"][0])
+            if first_year < min_year:
+                min_year = first_year
 
         data[0]["x"] = new_x
         data[0]["y"] = new_y
@@ -117,21 +175,16 @@ def serialize(context):
     y_values = (
         (data[0].get("y") or []) +
         (data[1].get("y") or []) +
-        (data[4].get("y") or [])
+        (data[4].get("y") or []) +
+        ((trace_6.get("y") or []) if trace_6 else [])
     )
 
     if y_values:
-        top = (
-            layout.get("margin", {}).get("t") or
-            layout.get("template", {}).get("margin", {}).get("t")
-        ) or 0
         min_y = getMin(y_values)
         max_y = getMax(y_values)
 
         min_y = min_y if min_y < 0 else 0
         max_y = max_y if max_y > 0 else 0
-
-        nticks = max(int((context.height - top) / 100), 2)
 
         step = exact_step(min_y, max_y, nticks)
 
