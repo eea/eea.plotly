@@ -28,7 +28,17 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
         data = file_binary.data
         if not data:
             return None
-        buff = StringIO(data.decode('utf-8-sig'))
+
+        encodings = ['latin1', 'iso-8859-1', 'cp1252', 'utf-8-sig']
+        for encoding in encodings:
+            try:
+                buff = StringIO(data.decode(encoding))
+            except UnicodeDecodeError:
+                continue
+
+        if not buff:
+            return None
+
         try:
             data = {}
             headers = []
