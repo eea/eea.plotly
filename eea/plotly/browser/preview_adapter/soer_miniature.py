@@ -1,4 +1,5 @@
-""" SOER miniature theme for Plotly visualizations. """
+"""SOER miniature theme for Plotly visualizations."""
+
 import math
 
 SOER_TRACES_COUNT = 5
@@ -36,7 +37,7 @@ def exact_step(vmin, vmax, target_ticks=5):
 
 
 def toFloat(v):
-    """ Convert value to float """
+    """Convert value to float"""
     try:
         return float(v)
     except ValueError:
@@ -44,17 +45,17 @@ def toFloat(v):
 
 
 def getMin(arr):
-    """ Get minimum value from array """
+    """Get minimum value from array"""
     return min(toFloat(v) for v in arr if v is not None)
 
 
 def getMax(arr):
-    """ Get maximum value from array """
+    """Get maximum value from array"""
     return max(toFloat(v) for v in arr if v is not None)
 
 
 def serialize(context):
-    """ Serialize the context for SOER miniature theme"""
+    """Serialize the context for SOER miniature theme"""
     if context.visualization is None:
         return False
 
@@ -62,8 +63,8 @@ def serialize(context):
     layout = context.visualization["layout"]
 
     top = (
-        layout.get("margin", {}).get("t") or
-        layout.get("template", {}).get("margin", {}).get("t")
+        layout.get("margin", {}).get("t")
+        or layout.get("template", {}).get("margin", {}).get("t")
     ) or 0
     nticks = max(int((context.height - top) / 100), 2)
 
@@ -89,7 +90,7 @@ def serialize(context):
         layout["template"]["layout"]["annotationdefaults"] = {
             "showarrow": False,
             "xref": "paper",
-            "yref": "paper"
+            "yref": "paper",
         }
         return False
 
@@ -150,7 +151,7 @@ def serialize(context):
 
         if y4_len >= y_len:
             data[4]["x"] = new_x
-            data[4]["y"] = data[4]["y"][y4_len - y_len:y4_len + 1]
+            data[4]["y"] = data[4]["y"][y4_len - y_len : y4_len + 1]
         elif data[4].get("x") is None or data[4].get("y") is None:
             data[4] = {
                 "type": "scatter",
@@ -159,24 +160,21 @@ def serialize(context):
                 "visible": True,
                 "marker": {
                     "color": "rgba(0, 0, 0, 1)",
-                    "line": {
-                        "color": "rgba(0, 0, 0, 1)"
-                    }
-                }
+                    "line": {"color": "rgba(0, 0, 0, 1)"},
+                },
             }
             data[4]["y"][len(data[4]["y"]) - 1] = new_y[-1]
 
         layout["xaxis"]["tickmode"] = "array"
         layout["xaxis"]["tickvals"] = [min_year, max_year, 2030]
-        layout["xaxis"]["range"] = [
-            min_year - 2, 2032]
+        layout["xaxis"]["range"] = [min_year - 2, 2032]
         layout["xaxis"]["autorange"] = True
 
     y_values = (
-        (data[0].get("y") or []) +
-        (data[1].get("y") or []) +
-        (data[4].get("y") or []) +
-        ((trace_6.get("y") or []) if trace_6 else [])
+        (data[0].get("y") or [])
+        + (data[1].get("y") or [])
+        + (data[4].get("y") or [])
+        + ((trace_6.get("y") or []) if trace_6 else [])
     )
 
     if y_values:
@@ -193,14 +191,11 @@ def serialize(context):
         layout["yaxis"]["tick0"] = min_y - step
         layout["yaxis"]["dtick"] = step
 
-        layout["yaxis"]["range"] = [
-            min_y - step, max_y + 2 * step]
+        layout["yaxis"]["range"] = [min_y - step, max_y + 2 * step]
         layout["yaxis"]["autorange"] = False
 
     if "text" in data[0]:
-        data[0]["text"] = [
-            (t if t is None else " " + str(t))
-            for t in data[0]["text"]]
+        data[0]["text"] = [(t if t is None else " " + str(t)) for t in data[0]["text"]]
 
     data[1]["x"] = None
     data[1]["y"] = None

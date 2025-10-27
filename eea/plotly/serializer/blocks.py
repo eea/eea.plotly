@@ -1,11 +1,11 @@
-""" block-related utils """
+"""block-related utils"""
 
 from AccessControl import Unauthorized
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import (
     ISerializeToJson,
-    IBlockFieldSerializationTransformer
+    IBlockFieldSerializationTransformer,
 )
 from plone.restapi.serializer.utils import uid_to_url
 from zExceptions import Forbidden
@@ -41,23 +41,15 @@ class EmbedVisualizationSerializationTransformer:
         value["vis_url"] = url
 
         if self.error:
-            return {
-                **value,
-                "visualization": {
-                    "error": self.error
-                }
-            }
+            return {**value, "visualization": {"error": self.error}}
 
-        if 'visualization' in value:
-            del value['visualization']
+        if "visualization" in value:
+            del value["visualization"]
 
         if not doc_json:
             return value
 
-        response = {
-            **value,
-            "properties": self.state["properties"]
-        }
+        response = {**value, "properties": self.state["properties"]}
 
         if isExpanded(self.request):
             response["visualization"] = getVisualization(context=doc_json)
@@ -65,7 +57,7 @@ class EmbedVisualizationSerializationTransformer:
         return response
 
     def init(self, value):
-        """ Init """
+        """Init"""
         self.state = {}
         self.state["url"] = value.get("vis_url")
 
@@ -82,7 +74,7 @@ class EmbedVisualizationSerializationTransformer:
         self.state["properties"] = {
             **getProperties(self.state["doc_json"]),
             "@type": self.state["doc_json"].get("@type"),
-            "UID": self.state["doc_json"].get("UID")
+            "UID": self.state["doc_json"].get("UID"),
         }
 
     def get_doc(self):
@@ -92,14 +84,20 @@ class EmbedVisualizationSerializationTransformer:
         try:
             return api.content.get(UID=uid)
         except Unauthorized:
-            self.error = "Apologies, it seems this " + getLinkHTML(
-                url, self.title) + " has not been published yet."
+            self.error = (
+                "Apologies, it seems this "
+                + getLinkHTML(url, self.title)
+                + " has not been published yet."
+            )
             return None
 
         except Forbidden:
-            self.error = "Apologies, it seems you do not have " + \
-                "permissions to see this " + getLinkHTML(url, self.title) + \
-                "."
+            self.error = (
+                "Apologies, it seems you do not have "
+                + "permissions to see this "
+                + getLinkHTML(url, self.title)
+                + "."
+            )
             return None
 
     def get_doc_json(self):
@@ -107,12 +105,10 @@ class EmbedVisualizationSerializationTransformer:
         doc = self.state["doc"]
         if not doc:
             return None
-        serializer = queryMultiAdapter(
-            (doc, self.request), ISerializeToJson)
+        serializer = queryMultiAdapter((doc, self.request), ISerializeToJson)
         if not serializer:
             return None
-        return serializer(
-            version=self.request.get("version"))
+        return serializer(version=self.request.get("version"))
 
 
 @implementer(IBlockFieldSerializationTransformer)

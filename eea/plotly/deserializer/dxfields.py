@@ -1,4 +1,4 @@
-""" dxfields deserializers """
+"""dxfields deserializers"""
 
 from zope.component import adapter
 from zope.interface import implementer
@@ -19,10 +19,8 @@ class VisualizationFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         value = sanitizeVisualization(value)
 
-        if 'provider_url' in value:
+        if "provider_url" in value:
             url = value["provider_url"]
-            value["provider_url"] = path2uid(
-                context=self.context, link=getLink(url)
-            )
+            value["provider_url"] = path2uid(context=self.context, link=getLink(url))
 
         return value

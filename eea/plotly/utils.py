@@ -1,16 +1,16 @@
-""" Utility functions for Plotly """
+"""Utility functions for Plotly"""
 
 from urllib.parse import urlparse
 
 
 def setProperty(obj, name, value):
-    """ Set property """
+    """Set property"""
     if value is not None:
         obj[name] = value
 
 
 def delProperty(obj, name):
-    """ Delete property """
+    """Delete property"""
     if name in obj:
         del obj[name]
 
@@ -43,17 +43,17 @@ def sanitizeVisualization(v={}):
 
 
 def getLink(path):
-    """ Get link """
+    """Get link"""
 
     URL = urlparse(path)
 
-    if URL.netloc.startswith('localhost') and URL.scheme:
+    if URL.netloc.startswith("localhost") and URL.scheme:
         return path.replace(URL.scheme + "://" + URL.netloc, "")
     return path
 
 
 def getLinkHTML(url, text=None):
-    """ Get link HTML """
+    """Get link HTML"""
 
     if not url:
         return url
@@ -61,11 +61,11 @@ def getLinkHTML(url, text=None):
     if not text:
         text = url
 
-    return '<a href="' + url + '" target="_blank">' + text + '</a>'
+    return '<a href="' + url + '" target="_blank">' + text + "</a>"
 
 
 def isExpanded(request):
-    """ Check if a given field is expanded. """
+    """Check if a given field is expanded."""
     expanded = request.form.get("expand.visualization", None)
     if expanded is None:
         return False

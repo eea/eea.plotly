@@ -1,4 +1,5 @@
-""" visualization module """
+"""visualization module"""
+
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import queryMultiAdapter
@@ -10,9 +11,7 @@ class VisualizationGet(Service):
 
     def reply(self):
         """reply"""
-        serializer = queryMultiAdapter(
-            (self.context, self.request), ISerializeToJson
-        )
+        serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
         if serializer is None:
             self.request.response.setStatus(501)
@@ -23,7 +22,7 @@ class VisualizationGet(Service):
 
         return {
             "properties": getProperties(serializer),
-            "visualization": getVisualization(serializer, False)
+            "visualization": getVisualization(serializer, False),
         }
 
 
@@ -32,9 +31,7 @@ class VisualizationLayoutGet(Service):
 
     def reply(self):
         """reply"""
-        serializer = queryMultiAdapter(
-            (self.context, self.request), ISerializeToJson
-        )
+        serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
         if serializer is None:
             self.request.response.setStatus(501)
@@ -45,5 +42,5 @@ class VisualizationLayoutGet(Service):
 
         return {
             "properties": getProperties(serializer),
-            "visualization": getVisualization(serializer)
+            "visualization": getVisualization(serializer),
         }
