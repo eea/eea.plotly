@@ -1,4 +1,3 @@
-# pylint: disable=dangerous-default-value
 """ Utility functions for Plotly """
 
 from urllib.parse import urlparse
