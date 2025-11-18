@@ -1,4 +1,4 @@
-""" behavior module """
+"""behavior module"""
 
 import json
 
@@ -17,7 +17,7 @@ VIZ_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
 @provider(IFormFieldProvider)
 class IPlotlyVisualization(model.Schema):
-    """ A plotly visualization behavior provider """
+    """A plotly visualization behavior provider"""
 
     visualization = JSONField(
         title="Visualization", required=False, default={}, schema=VIZ_SCHEMA

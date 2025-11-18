@@ -1,4 +1,4 @@
-""" dxfields serializers """
+"""dxfields serializers"""
 
 import copy
 import csv
@@ -29,7 +29,7 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
         if not data:
             return None
 
-        encodings = ['latin1', 'iso-8859-1', 'cp1252', 'utf-8-sig']
+        encodings = ["latin1", "iso-8859-1", "cp1252", "utf-8-sig"]
         for encoding in encodings:
             try:
                 buff = StringIO(data.decode(encoding))
@@ -66,7 +66,7 @@ class VisualizationFieldSerializer(DefaultFieldSerializer):
 
         value = sanitizeVisualization(value)
 
-        if 'provider_url' in value:
+        if "provider_url" in value:
             value["provider_url"] = uid_to_url(value["provider_url"])
 
         return json_compatible(value)
