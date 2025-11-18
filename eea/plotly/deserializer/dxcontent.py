@@ -1,4 +1,5 @@
-""" Deserialize Plotly visualization from JSON """
+"""Deserialize Plotly visualization from JSON"""
+
 from io import StringIO
 import json
 import plotly.io as pio
@@ -18,7 +19,7 @@ from eea.plotly.io_json import JSONEncoder
 @implementer(IDeserializeFromJson)
 @adapter(IPlotlyVisualization, Interface)
 class DeserializeVisualizationFromJson(DeserializeFromJson):
-    """ Deserialize Plotly visualization from JSON """
+    """Deserialize Plotly visualization from JSON"""
 
     def jsonToBinary(self, data):
         """Convert JSON data to binary"""
@@ -50,34 +51,29 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
 
         CsvWriter(output).writerows(rows)
 
-        return output.getvalue().encode('utf-8')
+        return output.getvalue().encode("utf-8")
 
     def __call__(
-            self, validate_all=False, data=None, create=False,
-            mask_validation_errors=True):
-
-        super().__call__(
-            validate_all, data, create, mask_validation_errors
-        )
+        self, validate_all=False, data=None, create=False, mask_validation_errors=True
+    ):
+        super().__call__(validate_all, data, create, mask_validation_errors)
 
         ok = False
         for interface, names in self.modified.items():
-            if (interface == IPlotlyVisualization and
-                    "IPlotlyVisualization.visualization" in names):
+            if (
+                interface == IPlotlyVisualization
+                and "IPlotlyVisualization.visualization" in names
+            ):
                 ok = True
                 break
 
         if not ok:
             return self.context
 
-        data = self.jsonToBinary(self.context.visualization.get(
-            "dataSources", {})
-        )
+        data = self.jsonToBinary(self.context.visualization.get("dataSources", {}))
 
         self.context.file = NamedBlobFile(
-            data=data if data else b"",
-            filename="data.csv",
-            contentType="text/csv"
+            data=data if data else b"", filename="data.csv", contentType="text/csv"
         )
 
         if "dataSources" in self.context.visualization:
@@ -89,28 +85,27 @@ class DeserializeVisualizationFromJson(DeserializeFromJson):
             Attributes(
                 IPlotlyVisualization,
                 "IPlotlyVisualization.visualization",
-                "IPlotlyVisualization.file"
+                "IPlotlyVisualization.file",
             )
         )
         notify(ObjectModifiedEvent(self.context, *modified))
 
         # Handle preview image
         fig = pio.from_json(
-            json.dumps({
-                "data": self.context.visualization.get("data", []),
-                "layout": self.context.visualization.get("layout", {}),
-                "frames": self.context.visualization.get("frames", [])
-            },
-                cls=JSONEncoder
+            json.dumps(
+                {
+                    "data": self.context.visualization.get("data", []),
+                    "layout": self.context.visualization.get("layout", {}),
+                    "frames": self.context.visualization.get("frames", []),
+                },
+                cls=JSONEncoder,
             ),
-            skip_invalid=True
+            skip_invalid=True,
         )
 
         image = fig.to_image(format="svg", width=1200, height=900)
         self.context.preview_image = NamedBlobImage(
-            data=image,
-            filename="preview.svg",
-            contentType="image/svg+xml"
+            data=image, filename="preview.svg", contentType="image/svg+xml"
         )
 
         return self.context

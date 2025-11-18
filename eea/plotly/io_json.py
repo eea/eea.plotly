@@ -1,4 +1,5 @@
 """JSON encoder that handles Decimal values."""
+
 import decimal
 import json
 

@@ -1,14 +1,12 @@
-""" Preview adapter for Plotly browser. """
+"""Preview adapter for Plotly browser."""
 
 adapters = {
-    "soer_miniature": (
-        "eea.plotly.browser.preview_adapter.soer_miniature.serialize"
-    ),
+    "soer_miniature": ("eea.plotly.browser.preview_adapter.soer_miniature.serialize"),
 }
 
 
 def get_preview_adapter(context, name):
-    """ Get the preview adapter for a given name.
+    """Get the preview adapter for a given name.
 
     Args:
         name (str): The name of the preview adapter.

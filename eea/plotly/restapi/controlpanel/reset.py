@@ -1,4 +1,5 @@
 """RestAPI enpoint @plotly GET"""
+
 import os.path
 import json
 from plone.restapi.services import Service
@@ -22,21 +23,18 @@ class PlotlySettingsReset(Service):
 
         registry = getUtility(IRegistry)
         cp = registry.forInterface(IPlotlySettings)
-        package_dir = os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))
+        package_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         profile_path = os.path.join(
-            package_dir, '..', 'profiles', 'default', 'controlpanel.json')
+            package_dir, "..", "profiles", "default", "controlpanel.json"
+        )
 
         if os.path.exists(profile_path):
-            with open(profile_path, 'r') as f:
+            with open(profile_path, "r") as f:
                 settings = json.load(f)
                 # Reset control panel with default settings
-                cp.themes = settings.get('themes', [])
-                cp.templates = settings.get('templates', [])
+                cp.themes = settings.get("themes", [])
+                cp.templates = settings.get("templates", [])
         else:
             print(f"File not found: {profile_path}")
 
-        return {
-            "themes": cp.themes,
-            "templates": cp.templates
-        }
+        return {"themes": cp.themes, "templates": cp.templates}

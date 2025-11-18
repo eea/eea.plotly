@@ -1,4 +1,4 @@
-""" block-related utils """
+"""block-related utils"""
 
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
@@ -22,11 +22,11 @@ class EmbedVisualizationDeserializationTransformer:
         self.request = request
 
     def __call__(self, value):
-        delProperty(value, 'visualization')
-        delProperty(value, 'properties')
-        delProperty(value, 'image_scales')
-        if 'vis_url' in value:
-            value['vis_url'] = path2uid(
-                context=self.context, link=getLink(value['vis_url'])
+        delProperty(value, "visualization")
+        delProperty(value, "properties")
+        delProperty(value, "image_scales")
+        if "vis_url" in value:
+            value["vis_url"] = path2uid(
+                context=self.context, link=getLink(value["vis_url"])
             )
         return value
