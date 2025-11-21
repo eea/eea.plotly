@@ -25,9 +25,9 @@ def sanitizeVisualization(v={}):
     dataSources.update(v.get("dataSources", {}))
 
     viz = {
-        "data": v.get("data", chartData.get("data", [])),
-        "layout": v.get("layout", chartData.get("layout", {})),
-        # "frames": v.get("frames", chartData.get("frames", [])),
+        "data": chartData.get("data", v.get("data", [])),
+        "layout": chartData.get("layout", v.get("layout", {})),
+        # "frames": chartData.get("frames", v.get("frames", [])),
         "columns": columns,
         "dataSources": dataSources,
         # "dataSourcesOrder": v.get("dataSourcesOrder", []),
