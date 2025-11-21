@@ -1,6 +1,9 @@
 Changelog
 =========
 
+2.3-dev0 - (unreleased)
+---------------------------
+
 2.2 - (2025-11-20)
 ---------------------------
 * Change: better handle of backward compatibility, ref #293767
