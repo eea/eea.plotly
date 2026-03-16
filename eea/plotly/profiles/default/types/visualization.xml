@@ -20,6 +20,7 @@
    <property name="klass">collective.folderishtypes.dx.content.FolderishDocument</property>
    <property name="behaviors">
       <element value="eea.plotly.visualization" />
+      <element value="eea.genai.summary" />
       <element value="eea.coremetadata.behavior" />
       <element value="eea.dataconnector.figure_note" />
       <element value="plone.namefromtitle" />

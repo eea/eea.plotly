@@ -1,0 +1,13 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    i18n_domain="eea">
+
+    <plone:service
+        method="POST"
+        for="Products.CMFCore.interfaces.IContentish"
+        factory=".post.LLMGenerateChartPost"
+        name="@llm-generate-chart"
+        permission="cmf.ModifyPortalContent"
+    />
+
+</configure>

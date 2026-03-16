@@ -3,5 +3,6 @@
   <include package="plone.restapi" />
   <include package=".controlpanel" />
   <include package=".visualization" />
+  <include package=".chart" />
 
 </configure>

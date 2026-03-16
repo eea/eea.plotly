@@ -1,11 +1,14 @@
 <configure xmlns="http://namespaces.zope.org/zope" xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:genai="http://namespaces.eea.europa.eu/genai"
     i18n_domain="eea">
 
     <i18n:registerTranslations directory="locales" />
 
     <include file="profiles.zcml" />
     <include file="permissions.zcml" />
+
+    <include package="eea.genai.core" file="meta.zcml" />
 
     <include package=".browser" />
     <include package=".restapi" />
@@ -25,6 +28,36 @@
         title="EEA-Viz_Plotly"
         description="Allows adding an interactive plotly chart."
         provides="eea.plotly.behaviors.IPlotlyVisualization"
+    />
+
+    <!-- GenAI: Context provider for chart interpretation -->
+    <genai:agentContextProvider
+        name="plotly_visualization"
+        class=".context_providers.PlotlyVisualizationProvider"
+    />
+
+    <!-- GenAI: Plotly knowledge skill for chart generation -->
+    <genai:agentSkill
+        name="plotly_knowledge"
+        class=".skills.PlotlyKnowledgeSkill"
+    />
+
+    <!-- GenAI: Tool to fetch chart templates by label -->
+    <genai:agentTool
+        name="get_plotly_template"
+        class=".tools.GetPlotlyTemplateTool"
+    />
+
+    <!-- GenAI: Content-type-specific summarizer for visualization -->
+    <genai:agent
+        name="summarizer:visualization"
+        class=".agents.PlotlySummarizerAgent"
+    />
+
+    <!-- GenAI: Chart generator agent -->
+    <genai:agent
+        name="plotly_generator"
+        class=".agents.PlotlyGeneratorAgent"
     />
 
 </configure>
