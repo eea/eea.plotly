@@ -75,8 +75,7 @@ class ChartGenerationResult(BaseModel):
 
     temporal_coverage: list[int] = Field(
         description=(
-            "List of years covered by the data "
-            "(e.g. [2018, 2019, 2020, 2021, 2022])."
+            "List of years covered by the data (e.g. [2018, 2019, 2020, 2021, 2022])."
         ),
         default_factory=list,
     )

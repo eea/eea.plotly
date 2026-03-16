@@ -47,7 +47,7 @@ setup(
         "collective.folderishtypes",
         "plotly==5.24.1",
         "kaleido==0.2.1",
-        "eea.genai.summary"
+        "eea.genai.summary",
     ],
     extras_require={
         "test": [

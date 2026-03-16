@@ -34,9 +34,7 @@ def generate_chart(prompt, data_sources=None, context=None, request=None):
     if data_sources:
         deps.data_sources = data_sources
 
-    result = executor.run_with_agent(
-        "plotly_generator", user_prompt=prompt, deps=deps
-    )
+    result = executor.run_with_agent("plotly_generator", user_prompt=prompt, deps=deps)
 
     _inject_theme(result)
 
