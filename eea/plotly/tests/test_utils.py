@@ -158,11 +158,16 @@ class TestGetLinkHTML(unittest.TestCase):
 
     def test_with_text(self):
         result = getLinkHTML("https://example.com", "Click here")
-        self.assertEqual(result, '<a href="https://example.com" target="_blank">Click here</a>')
+        self.assertEqual(
+            result, '<a href="https://example.com" target="_blank">Click here</a>'
+        )
 
     def test_without_text(self):
         result = getLinkHTML("https://example.com")
-        self.assertEqual(result, '<a href="https://example.com" target="_blank">https://example.com</a>')
+        self.assertEqual(
+            result,
+            '<a href="https://example.com" target="_blank">https://example.com</a>',
+        )
 
     def test_empty_url(self):
         result = getLinkHTML("")
@@ -179,11 +184,13 @@ class TestIsExpanded(unittest.TestCase):
     def test_expanded(self):
         class FakeRequest:
             form = {"expand.visualization": "1"}
+
         self.assertTrue(isExpanded(FakeRequest()))
 
     def test_not_expanded(self):
         class FakeRequest:
             form = {}
+
         self.assertFalse(isExpanded(FakeRequest()))
 
 
