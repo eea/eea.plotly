@@ -1,8 +1,10 @@
 Changelog
 =========
 
-2.3-dev0 - (unreleased)
+2.3 - (2026-04-14)
 ---------------------------
+* Change: Add unit tests for utils, io_csv, and io_json modules
+  [avoinea]
 
 2.2 - (2025-11-20)
 ---------------------------
