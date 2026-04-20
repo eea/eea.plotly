@@ -4,5 +4,6 @@
   <include package=".controlpanel" />
   <include package=".visualization" />
   <include package=".chart" />
+  <include package=".summarize" />
 
 </configure>

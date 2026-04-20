@@ -1,0 +1,11 @@
+<configure xmlns="http://namespaces.zope.org/zope" xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="POST"
+    name="@summarize-visualizations"
+    for="*"
+    factory=".post.VisualizationsSummarize"
+    permission="cmf.ManagePortal"
+  />
+
+</configure>

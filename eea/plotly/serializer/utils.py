@@ -35,6 +35,7 @@ def getProperties(context):
         "other_organisations": context.get("other_organisations"),
         "data_provenance": context.get("data_provenance"),
         "figure_note": context.get("figure_note"),
+        "llm_summary": context.get("llm_summary"),
     }
 
 
