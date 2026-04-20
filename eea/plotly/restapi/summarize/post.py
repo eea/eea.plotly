@@ -29,7 +29,6 @@ class VisualizationsSummarize(Service):
 
         path = self._get_path()
         visualizations = self._get_visualizations_with_empty_summary(path)
-        
 
         if not visualizations:
             return {
