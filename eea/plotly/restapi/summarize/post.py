@@ -1,26 +1,24 @@
 """REST API endpoint to trigger LLM summary generation for visualizations"""
 
 import logging
-import threading
 import uuid
 
+import transaction
 from plone import api
 from plone.restapi.services import Service
-from zope.interface import implementer
-from zope.publisher.interfaces import IPublishTraverse
 
 from eea.genai.summary.subscribers import generate_summary_for
 from eea.plotly.interfaces import IPlotlyLayer
 
 logger = logging.getLogger("eea.plotly")
 
+COMMIT_BATCH_SIZE = 100
 
-@implementer(IPublishTraverse)
+
 class VisualizationsSummarize(Service):
     """Trigger LLM summary generation for visualizations with empty llm_summary."""
 
     def reply(self):
-        """Reply"""
         if not IPlotlyLayer.providedBy(self.request):
             return {
                 "status": "error",
@@ -52,14 +50,12 @@ class VisualizationsSummarize(Service):
         }
 
     def _get_path(self):
-        """Get the path from the request or use site root."""
         context = self.context
         if context is not None:
             return "/".join(context.getPhysicalPath())
         return "/"
 
     def _get_visualizations_with_empty_summary(self, path):
-        """Query visualizations with empty llm_summary under the given path."""
         portal = api.portal.get()
         site_path = "/".join(portal.getPhysicalPath())
         search_path = path if path.startswith(site_path) else site_path
@@ -77,18 +73,16 @@ class VisualizationsSummarize(Service):
                 obj = brain.getObject()
                 if obj is None:
                     continue
-
                 llm_summary = getattr(obj, "llm_summary", None)
                 if not llm_summary or not llm_summary.strip():
                     visualizations.append(obj)
-            except Exception as e:
-                logger.warning(f"Could not access {brain.getURL()}: {e}")
+            except Exception as exc:
+                logger.warning(f"Could not access {brain.getURL()}: {exc}")
                 continue
 
         return visualizations
 
     def _check_locked(self, obj):
-        """Check if the object is locked."""
         try:
             from plone.locking.interfaces import ILockable
 
@@ -103,43 +97,46 @@ class VisualizationsSummarize(Service):
             return False
 
     def _process_visualizations(self, visualizations, job_id):
-        """Process visualizations in a background thread and return immediately."""
+        processed = 0
+        skipped_locked = 0
+        errors = []
+        pending = 0
 
-        def process_in_background():
-            processed = 0
-            skipped_locked = 0
-
-            for obj in visualizations:
-                try:
-                    if self._check_locked(obj):
-                        logger.info(
-                            f"[{job_id}] Skipping locked visualization: {obj.absolute_url()}"
-                        )
-                        skipped_locked += 1
-                        continue
-
-                    generate_summary_for(obj, self.request)
-                    logger.info(
-                        f"[{job_id}] Updated llm_summary for {obj.absolute_url()}"
-                    )
-                    processed += 1
-
-                except Exception as e:
-                    error_msg = (
-                        f"[{job_id}] Error processing {obj.absolute_url()}: {str(e)}"
-                    )
-                    logger.error(error_msg)
+        for obj in visualizations:
+            url = obj.absolute_url()
+            try:
+                if self._check_locked(obj):
+                    logger.info(f"[{job_id}] Skipping locked visualization: {url}")
+                    skipped_locked += 1
                     continue
 
-            logger.info(
-                f"[{job_id}] Completed: processed={processed}, skipped_locked={skipped_locked}"
-            )
+                generate_summary_for(obj, self.request)
+                processed += 1
+                pending += 1
+                logger.info(f"[{job_id}] Updated llm_summary for {url}")
 
-        thread = threading.Thread(target=process_in_background, daemon=True)
-        thread.start()
+                if pending >= COMMIT_BATCH_SIZE:
+                    transaction.commit()
+                    logger.info(f"[{job_id}] Committed batch of {pending}")
+                    pending = 0
+
+            except Exception as exc:
+                msg = f"{url}: {exc}"
+                logger.error(f"[{job_id}] Error processing {msg}")
+                errors.append(msg)
+                continue
+
+        if pending > 0:
+            transaction.commit()
+            logger.info(f"[{job_id}] Committed final batch of {pending}")
+
+        logger.info(
+            f"[{job_id}] Completed: processed={processed}, "
+            f"skipped_locked={skipped_locked}, errors={len(errors)}"
+        )
 
         return {
-            "processed": 0,
-            "skipped_locked": 0,
-            "errors": [],
+            "processed": processed,
+            "skipped_locked": skipped_locked,
+            "errors": errors,
         }
