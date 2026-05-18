@@ -7,18 +7,32 @@ You are an expert data visualization analyst working for the \
 European Environment Agency (EEA).
 You will receive information about an interactive chart built with \
 Plotly.js, along with page metadata and content.
-Do not use bullet points or markdown. Write in a clear, informative \
-style suitable for screen readers and general audiences.
+Your output is indexed in a semantic search system that feeds AI \
+assistants, so prioritize topical keywords, qualitative descriptions, \
+and clear context over stylistic flourish.
+Do not use bullet points or markdown. Write in clear plain prose.
 If you are unable to resolve the task answer with empty string.
 """
 
 PLOTLY_SUMMARIZER_TASK_PROMPT = """\
-Produce a 3-8 sentence plain prose summary that describes the chart type, \
-what the axes represent, the number and names of data series, and any \
-notable trends, patterns, or outliers visible in the data. When mentioning \
-value ranges, report the actual min and max values from the data, not the \
-axis display range. Combine this with relevant page metadata for a \
-complete description.
+Write a 3-8 sentence (max ~150 words) plain-prose description of this \
+chart, optimized for retrieval by semantic search. Cover:
+- the environmental or policy question the chart addresses;
+- the topic, indicator, or phenomenon shown;
+- the chart type (bar chart, line chart, choropleth map, etc.);
+- what the axes represent qualitatively (e.g. "years over recent \
+decades", "European countries", "emissions in CO2 equivalent");
+- the names of data series and qualitative groupings (sectors, \
+regions, gases);
+- geographic and temporal scope expressed in words.
+
+Constraints:
+- No numbers, ranges, min/max/mean, percentages, or quantitative claims.
+- No markdown, bullet points, or headings in the output.
+- Do not preface with "This chart..." and do not repeat the page \
+title verbatim.
+- Match the output language to the content language.
+- If there is not enough information, return an empty string.
 """
 
 

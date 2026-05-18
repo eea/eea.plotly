@@ -14,6 +14,19 @@ logger = logging.getLogger("eea.plotly")
 _ARRAY_TRUNCATION_THRESHOLD = 200
 
 
+class _Source:
+    """Unified accessor: properties dict overrides context attributes."""
+
+    def __init__(self, context, properties):
+        self._context = context
+        self._properties = properties
+
+    def __getattr__(self, name):
+        if name in self._properties:
+            return self._properties[name]
+        return getattr(self._context, name, None)
+
+
 class PlotlyVisualizationProvider(AgentContextProvider):
     """Extracts Plotly chart data and adds it to the user prompt.
 
@@ -27,10 +40,14 @@ class PlotlyVisualizationProvider(AgentContextProvider):
 
     def user_prompt(self, deps):
         context = getattr(deps, "context", None)
+        properties = getattr(deps, "properties", None) or {}
+
         if context is None:
             return ""
 
-        viz = getattr(context, "visualization", None)
+        source = _Source(context, properties)
+
+        viz = getattr(source, "visualization", None)
         if not viz or not isinstance(viz, dict):
             return ""
 
@@ -99,28 +116,22 @@ def _truncate_data_sources(data_sources):
 def _summarize_array(values):
     """Summarize a large array into a compact description string.
 
-    Returns a string like:
-    "[200 values, min=1.5, max=99.3, mean=45.2, first: [1.5, 2.0, 3.1], last: [97.0, 98.5, 99.3]]"
+    Numeric arrays are reduced to "[N numeric values]" only. We deliberately
+    omit min/max/mean and sample values so the summarizer agent cannot leak
+    or hallucinate quantitative claims (its prompt forbids numbers).
 
-    For non-numeric arrays (strings, dates):
-    "[200 values, 45 unique, first: ['AT', 'BE', 'BG'], last: ['SE', 'SI', 'SK']]"
+    Non-numeric (categorical/date) arrays keep first/last samples and unique
+    count because labels like country codes and year strings are useful
+    qualitative keywords for retrieval.
     """
     n = len(values)
-    first = values[:3]
-    last = values[-3:]
 
-    # Try numeric summary
     numeric = [v for v in values if isinstance(v, (int, float))]
     if len(numeric) == n and n > 0:
-        min_val = min(numeric)
-        max_val = max(numeric)
-        mean_val = sum(numeric) / n
-        return (
-            f"[{n} values, min={min_val}, max={max_val}, "
-            f"mean={mean_val:.2f}, first: {first}, last: {last}]"
-        )
+        return f"[{n} numeric values]"
 
-    # Non-numeric: count unique values
+    first = values[:3]
+    last = values[-3:]
     try:
         unique_count = len(set(str(v) for v in values))
     except Exception:
