@@ -3,7 +3,8 @@
 import json
 import logging
 
-from eea.genai.core.interfaces import AgentContextProvider
+from eea.genai.core.interfaces import Enricher
+from eea.genai.core.utils import Source
 from eea.plotly.prompts import clean_layout
 from eea.plotly.utils import sanitizeVisualization
 
@@ -14,20 +15,7 @@ logger = logging.getLogger("eea.plotly")
 _ARRAY_TRUNCATION_THRESHOLD = 200
 
 
-class _Source:
-    """Unified accessor: properties dict overrides context attributes."""
-
-    def __init__(self, context, properties):
-        self._context = context
-        self._properties = properties
-
-    def __getattr__(self, name):
-        if name in self._properties:
-            return self._properties[name]
-        return getattr(self._context, name, None)
-
-
-class PlotlyVisualizationProvider(AgentContextProvider):
+class PlotlyVisualizationProvider(Enricher):
     """Extracts Plotly chart data and adds it to the user prompt.
 
     Reads deps.context.visualization, cleans cosmetic layout keys,
@@ -45,7 +33,7 @@ class PlotlyVisualizationProvider(AgentContextProvider):
         if context is None:
             return ""
 
-        source = _Source(context, properties)
+        source = Source(context, properties)
 
         viz = getattr(source, "visualization", None)
         if not viz or not isinstance(viz, dict):
@@ -91,11 +79,47 @@ def prepare_visualization(viz):
     return result
 
 
+def _is_numeric_list(values):
+    """True if every element is a real number (ints/floats, not bool)."""
+    if not values:
+        return False
+    return all(
+        isinstance(v, (int, float)) and not isinstance(v, bool) for v in values
+    )
+
+
+def _looks_like_year_strings(values):
+    """True if strings parse as 4-digit calendar years.
+
+    String year arrays (e.g. ["2012","2013",...]) are otherwise treated as
+    categorical and would leak first/last samples through ``_summarize_array``.
+    """
+    if not values:
+        return False
+    for v in values:
+        if not isinstance(v, str) or len(v) != 4 or not v.isdigit():
+            return False
+        n = int(v)
+        if not (1800 <= n <= 2200):
+            return False
+    return True
+
+
 def _truncate_trace(trace):
-    """Return a copy of a trace with large arrays summarized."""
+    """Return a copy of a trace with sensitive/large arrays summarized.
+
+    Numeric arrays are always summarized (regardless of length) so raw
+    values cannot reach the LLM. Year-like string arrays are also always
+    summarized. Other lists pass through unless they exceed the truncation
+    threshold.
+    """
     result = {}
     for key, value in trace.items():
-        if isinstance(value, list) and len(value) > _ARRAY_TRUNCATION_THRESHOLD:
+        if isinstance(value, list) and (
+            _is_numeric_list(value)
+            or _looks_like_year_strings(value)
+            or len(value) > _ARRAY_TRUNCATION_THRESHOLD
+        ):
             result[key] = _summarize_array(value)
         else:
             result[key] = value
@@ -103,10 +127,14 @@ def _truncate_trace(trace):
 
 
 def _truncate_data_sources(data_sources):
-    """Return a copy of dataSources with large columns summarized."""
+    """Return a copy of dataSources with sensitive/large columns summarized."""
     result = {}
     for col_name, values in data_sources.items():
-        if isinstance(values, list) and len(values) > _ARRAY_TRUNCATION_THRESHOLD:
+        if isinstance(values, list) and (
+            _is_numeric_list(values)
+            or _looks_like_year_strings(values)
+            or len(values) > _ARRAY_TRUNCATION_THRESHOLD
+        ):
             result[col_name] = _summarize_array(values)
         else:
             result[col_name] = values
@@ -114,21 +142,23 @@ def _truncate_data_sources(data_sources):
 
 
 def _summarize_array(values):
-    """Summarize a large array into a compact description string.
+    """Summarize an array into a compact description string.
 
-    Numeric arrays are reduced to "[N numeric values]" only. We deliberately
-    omit min/max/mean and sample values so the summarizer agent cannot leak
-    or hallucinate quantitative claims (its prompt forbids numbers).
+    Numeric arrays → ``"[N numeric values]"``. Year-like string arrays →
+    ``"[N year-like values]"``. Other arrays keep first/last samples and
+    unique count because labels like country codes are useful qualitative
+    keywords for retrieval.
 
-    Non-numeric (categorical/date) arrays keep first/last samples and unique
-    count because labels like country codes and year strings are useful
-    qualitative keywords for retrieval.
+    Quantitative details (min/max/mean) are deliberately omitted: agents
+    that consume this output are instructed to avoid numeric claims, and
+    summary text cannot leak what is not present.
     """
     n = len(values)
 
-    numeric = [v for v in values if isinstance(v, (int, float))]
-    if len(numeric) == n and n > 0:
+    if _is_numeric_list(values):
         return f"[{n} numeric values]"
+    if _looks_like_year_strings(values):
+        return f"[{n} year-like values]"
 
     first = values[:3]
     last = values[-3:]

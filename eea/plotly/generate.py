@@ -3,41 +3,23 @@
 import logging
 
 from plone import api
-from zope.component import queryUtility
 
-from eea.genai.core.interfaces import IAgentExecutor
 from eea.genai.core.agent import AgentDeps
+from eea.genai.core.utils import get_executor
 from eea.plotly.controlpanel import IPlotlySettings
 
 logger = logging.getLogger("eea.plotly")
 
 
 def generate_chart(prompt, data_sources=None, context=None, request=None):
-    """Generate a full visualization content from a natural language description.
-
-    Uses the ZCML-registered 'plotly_generator' agent (overridable via
-    control panel).
-
-    Args:
-        prompt: Natural language description of the chart to create.
-        data_sources: Optional dict of column_name -> values.
-        context: Optional content object for context.
-        request: Optional HTTP request.
-
-    Returns:
-        dict with title, description, visualization (data + layout),
-        topics, temporal_coverage, and geo_coverage.
-    """
-    executor = _get_agent_executor()
-    deps = AgentDeps(context=context, request=request)
-
-    if data_sources:
-        deps.data_sources = data_sources
-
-    result = executor.run_with_agent("plotly_generator", user_prompt=prompt, deps=deps)
-
+    """Generate a full visualization content from a natural language description."""
+    deps = AgentDeps(
+        context=context, request=request, data_sources=data_sources or None
+    )
+    result = get_executor().run_with_agent(
+        "plotly_generator", user_prompt=prompt, deps=deps
+    )
     _inject_theme(result)
-
     return result.model_dump()
 
 
@@ -71,9 +53,3 @@ def _get_active_theme():
     return None
 
 
-def _get_agent_executor():
-    """Get the agent executor utility."""
-    executor = queryUtility(IAgentExecutor)
-    if executor is None:
-        raise RuntimeError("No IAgentExecutor utility registered")
-    return executor

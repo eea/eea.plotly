@@ -2,7 +2,7 @@
 
 import logging
 
-from eea.genai.core.interfaces import AgentSkill
+from eea.genai.core.interfaces import Enricher
 
 logger = logging.getLogger("eea.plotly")
 
@@ -154,7 +154,7 @@ All traces support:
 """
 
 
-class PlotlyKnowledgeSkill(AgentSkill):
+class PlotlyKnowledgeSkill(Enricher):
     """Adds Plotly JSON structure knowledge to the system prompt.
 
     Pure structural reference for the EEA visualization JSON format.

@@ -65,6 +65,41 @@ IRRELEVANT_LAYOUT_KEYS = {
 }
 
 
+# Per-axis keys that leak quantitative information (year ranges, tick
+# values, numeric formats). Axis identity (title, type, categoryorder) is
+# qualitative and stays.
+AXIS_LEAKY_KEYS = {
+    "range",
+    "autorange",
+    "tickvals",
+    "ticktext",
+    "tick0",
+    "dtick",
+    "tickformat",
+    "tickformatstops",
+    "rangeslider",
+    "rangeselector",
+    "rangebreaks",
+    "tickmode",
+    "nticks",
+}
+
+
 def clean_layout(layout):
-    """Remove irrelevant cosmetic keys from layout, keep semantic ones."""
-    return {k: v for k, v in layout.items() if k not in IRRELEVANT_LAYOUT_KEYS}
+    """Remove irrelevant cosmetic keys and leaky axis keys from layout.
+
+    Drops cosmetic top-level keys (see ``IRRELEVANT_LAYOUT_KEYS``) and then,
+    for any ``xaxis*`` / ``yaxis*`` sub-dict, strips quantitative axis keys
+    (``range``, ``tickvals``, ``tick0``, etc. — see ``AXIS_LEAKY_KEYS``)
+    so prompts cannot leak year ranges or numeric tick values to agents
+    that must not produce quantitative claims.
+    """
+    cleaned = {k: v for k, v in layout.items() if k not in IRRELEVANT_LAYOUT_KEYS}
+    for key, value in list(cleaned.items()):
+        if isinstance(value, dict) and (
+            key.startswith("xaxis") or key.startswith("yaxis")
+        ):
+            cleaned[key] = {
+                k: v for k, v in value.items() if k not in AXIS_LEAKY_KEYS
+            }
+    return cleaned

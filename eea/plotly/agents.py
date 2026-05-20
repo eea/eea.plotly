@@ -6,12 +6,29 @@ PLOTLY_SUMMARIZER_SYSTEM_PROMPT = """\
 You are an expert data visualization analyst working for the \
 European Environment Agency (EEA).
 You will receive information about an interactive chart built with \
-Plotly.js, along with page metadata and content.
+Plotly.js, along with limited page metadata.
 Your output is indexed in a semantic search system that feeds AI \
 assistants, so prioritize topical keywords, qualitative descriptions, \
 and clear context over stylistic flourish.
 Do not use bullet points or markdown. Write in clear plain prose.
 If you are unable to resolve the task answer with empty string.
+
+ABSOLUTE RULE — no quantitative information of any kind:
+- Forbidden phrasing includes any year ("2010", "2023"), decade \
+("the 2010s", "early 2010s", "mid-2020s"), year range \
+("2010-2023", "between 2015 and 2020", "from 2012 through 2032"), \
+percentage ("40%"), currency amount ("EUR 12 billion"), count \
+("261 million tonnes", "around 50", "over 7,000"), or change verb \
+implying magnitude ("tripled", "halved", "increased by", \
+"dropped to").
+- Use qualitative descriptors instead: "across recent decades", \
+"over a multi-year period", "a small share", "a notable increase", \
+"a downward trend", "a wide range of countries".
+- The chart data is provided only as compact summaries (e.g. \
+"[N numeric values]"). Do not invent specifics that those summaries \
+do not contain.
+If you accidentally include a number or year, rewrite that sentence \
+qualitatively before returning.
 """
 
 PLOTLY_SUMMARIZER_TASK_PROMPT = """\
@@ -24,10 +41,12 @@ chart, optimized for retrieval by semantic search. Cover:
 decades", "European countries", "emissions in CO2 equivalent");
 - the names of data series and qualitative groupings (sectors, \
 regions, gases);
-- geographic and temporal scope expressed in words.
+- geographic scope expressed in words.
 
 Constraints:
-- No numbers, ranges, min/max/mean, percentages, or quantitative claims.
+- No numbers, ranges, min/max/mean, percentages, currency amounts, \
+years, decades, or any other quantitative claim (see system prompt for \
+the full forbidden list).
 - No markdown, bullet points, or headings in the output.
 - Do not preface with "This chart..." and do not repeat the page \
 title verbatim.
@@ -37,12 +56,20 @@ title verbatim.
 
 
 class PlotlySummarizerAgent(AgentConfiguration):
-    """Chart summarizer agent for the EEA website."""
+    """Chart summarizer agent for the EEA website.
+
+    Context is intentionally minimal: only the chart structure (axes,
+    trace names, qualitative summaries of the data) plus
+    ``generic_metadata_no_dates`` (title, description, language, geo —
+    no temporal coverage). The ``blocks`` enricher is deliberately
+    excluded so the model cannot read year/quantity leaks from the
+    surrounding page text.
+    """
 
     system_prompt = PLOTLY_SUMMARIZER_SYSTEM_PROMPT
     task_prompt = PLOTLY_SUMMARIZER_TASK_PROMPT
     skills = ["plotly_knowledge"]
-    context_providers = ["generic_metadata", "blocks", "plotly_visualization"]
+    context_providers = ["generic_metadata_no_dates", "plotly_visualization"]
 
 
 PLOTLY_GENERATOR_SYSTEM_PROMPT = """\
