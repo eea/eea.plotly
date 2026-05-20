@@ -99,7 +99,5 @@ def clean_layout(layout):
         if isinstance(value, dict) and (
             key.startswith("xaxis") or key.startswith("yaxis")
         ):
-            cleaned[key] = {
-                k: v for k, v in value.items() if k not in AXIS_LEAKY_KEYS
-            }
+            cleaned[key] = {k: v for k, v in value.items() if k not in AXIS_LEAKY_KEYS}
     return cleaned

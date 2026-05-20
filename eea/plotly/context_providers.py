@@ -83,9 +83,7 @@ def _is_numeric_list(values):
     """True if every element is a real number (ints/floats, not bool)."""
     if not values:
         return False
-    return all(
-        isinstance(v, (int, float)) and not isinstance(v, bool) for v in values
-    )
+    return all(isinstance(v, (int, float)) and not isinstance(v, bool) for v in values)
 
 
 def _looks_like_year_strings(values):

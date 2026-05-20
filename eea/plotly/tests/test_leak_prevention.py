@@ -23,7 +23,6 @@ from eea.plotly.prompts import AXIS_LEAKY_KEYS, IRRELEVANT_LAYOUT_KEYS, clean_la
 
 
 class TestNumericDetection(unittest.TestCase):
-
     def test_ints(self):
         self.assertTrue(_is_numeric_list([1, 2, 3]))
 
@@ -48,7 +47,6 @@ class TestNumericDetection(unittest.TestCase):
 
 
 class TestYearStringDetection(unittest.TestCase):
-
     def test_recent_years(self):
         self.assertTrue(_looks_like_year_strings(["2012", "2013", "2014"]))
 
@@ -70,7 +68,6 @@ class TestYearStringDetection(unittest.TestCase):
 
 
 class TestSummarizeArray(unittest.TestCase):
-
     def test_numeric_no_quant_leak(self):
         out = _summarize_array([2012, 2013, 2014, 2015, 2016])
         self.assertEqual(out, "[5 numeric values]")
@@ -90,7 +87,6 @@ class TestSummarizeArray(unittest.TestCase):
 
 
 class TestTruncateTrace(unittest.TestCase):
-
     def test_small_year_axis_summarized(self):
         # Year axis of ~20 points was previously inlined verbatim.
         trace = {
@@ -124,7 +120,6 @@ class TestTruncateTrace(unittest.TestCase):
 
 
 class TestTruncateDataSources(unittest.TestCase):
-
     def test_small_numeric_column_summarized(self):
         ds = {"Year": list(range(2012, 2033)), "Country": ["DE", "FR"]}
         out = _truncate_data_sources(ds)
@@ -133,7 +128,6 @@ class TestTruncateDataSources(unittest.TestCase):
 
 
 class TestCleanLayout(unittest.TestCase):
-
     def test_cosmetic_stripped(self):
         layout = {"paper_bgcolor": "white", "title": {"text": "Chart"}}
         out = clean_layout(layout)

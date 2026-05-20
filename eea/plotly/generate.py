@@ -51,5 +51,3 @@ def _get_active_theme():
         if not theme.get("hidden"):
             return theme
     return None
-
-
